@@ -5,11 +5,11 @@
         @php
             $columns = [
                 ['label' => 'Sl No', 'column' => 'id', 'sort' => true],
-                ['label' => 'Roll No', 'column' => 'id', 'sort' => true],
-                ['label' => 'Name', 'column' => 'name', 'sort' => true],
-                ['label' => 'Mobile', 'column' => 'phone', 'sort' => true],
-                ['label' => 'Course', 'column' => 'course_id', 'sort' => true],
-                ['label' => 'Course Fee', 'column' => 'date', 'sort' => true],
+                ['label' => 'Roll No', 'column' => 'id', 'sort' => false],
+                ['label' => 'Name', 'column' => 'name', 'sort' => false],
+                ['label' => 'Mobile', 'column' => 'phone', 'sort' => false],
+                ['label' => 'Course', 'column' => 'course_id', 'sort' => false],
+                ['label' => 'Course Fee', 'column' => 'grand_total', 'sort' => true],
                 ['label' => 'Due Date', 'column' => 'due_date', 'sort' => true],
                 ['label' => 'Actions', 'column' => 'action', 'sort' => false],
             ];
@@ -27,7 +27,7 @@
                 @endphp
                 <tr>
                     <td>{{ $key + 1 }}</td>
-                    <td>{{ $item->id }}</td>
+                    <td>{{ $item->student?->id }}</td>
                     <td>{{ $item->student?->name }}</td>
                     <td>{{ $item->student?->phone }}</td>
                     <td>{{ $item->course?->course_name }}</td>

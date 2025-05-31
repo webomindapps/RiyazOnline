@@ -27,7 +27,7 @@
                     <td>{{ $key + 1 }}</td>
                     <td>{{ $item->title }}</td>
                     <td>{{ $item->priority }}</td>
-                    <td>{{ $item->content }}</td>
+                    <td style="width: 50%">{{ \Illuminate\Support\Str::words($item->content, 20, '...') }}</td>
                     <td>
                         <x-actions :item="$item" :options="$actions" />
                     </td>

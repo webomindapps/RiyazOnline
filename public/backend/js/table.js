@@ -59,7 +59,15 @@ $('#per_page').on('change', function () {
 
 function getRecords() {
     let route_name = $('#current_route').val();
-    let url = route_name + `?${$.param(table)}`;
+    
+    let filteredTable = {};
+    Object.keys(table).forEach(function (key) {
+        if (table[key] !== '' && table[key] !== null && table[key] !== undefined) {
+            filteredTable[key] = table[key];
+        }
+    });
+
+    let url = route_name + `?${$.param(filteredTable)}`;
     window.location.href = url;
 }
 

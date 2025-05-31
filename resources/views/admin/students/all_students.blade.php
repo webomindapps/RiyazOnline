@@ -9,10 +9,10 @@
                 ['label' => 'Roll No', 'column' => 'id', 'sort' => true],
                 ['label' => 'Name', 'column' => 'name', 'sort' => true],
                 ['label' => 'Mobile', 'column' => 'phone', 'sort' => true],
-                ['label' => 'Course', 'column' => 'course_id', 'sort' => true],
+                ['label' => 'Course', 'column' => 'course_id', 'sort' => false],
                 // ['label' => 'Guru', 'column' => 'date', 'sort' => true],
-                ['label' => 'Due Date', 'column' => 'status', 'sort' => true],
-                ['label' => 'Disable', 'column' => 'date', 'sort' => true],
+                ['label' => 'Due Date', 'column' => 'status', 'sort' => false],
+                ['label' => 'Disable', 'column' => 'date', 'sort' => false],
                 ['label' => 'Actions', 'column' => 'action', 'sort' => false],
             ];
 

@@ -1,7 +1,11 @@
 <x-app-layout>
     <div class="m-3 bg-white">
         <x-admin.breadcrumb title="New Registered Students" isCreate="{{ true }}"
-            createLink="{{ route('admin.student.create') }}" />
+            createLink="{{ route('admin.student.create') }}">
+            <a href="{{ route('admin.students.new.export') }}" class="add-btn">
+                <i class="bi bi-file-earmark-arrow-down"></i> Download
+            </a>
+        </x-admin.breadcrumb>
         @php
 
             $columns = [
@@ -10,9 +14,9 @@
                 ['label' => 'Name', 'column' => 'name', 'sort' => true],
                 ['label' => 'Mobile', 'column' => 'phone', 'sort' => true],
                 ['label' => 'Email', 'column' => 'email', 'sort' => true],
-                ['label' => 'Course', 'column' => 'course_id', 'sort' => true],
+                ['label' => 'Course', 'column' => 'course_id', 'sort' => false],
                 ['label' => 'Date of Reg', 'column' => 'date', 'sort' => true],
-                ['label' => 'Registration Status', 'column' => 'status', 'sort' => true],
+                ['label' => 'Registration Status', 'column' => 'status', 'sort' => false],
                 ['label' => 'Start Date', 'column' => 'date', 'sort' => true],
                 ['label' => 'Actions', 'column' => 'action', 'sort' => false],
             ];
@@ -20,7 +24,20 @@
             $bulkOptions = [];
         @endphp
 
-        <x-table :columns="$columns" :data="$students" checkAll="{{ false }}" :bulk="route('admin.mails.index', ['customer' => 'bulk'])" :route="route('admin.mails.index')">
+        <x-table :columns="$columns" :data="$students" checkAll="{{ false }}" :bulk="route('admin.students.new', ['customer' => 'bulk'])" :route="route('admin.students.new')">
+            <x-slot name="filters">
+                <div class="ms-2 d-flex align-items-center">
+                    <label for="from_date" class="me-2">Filter By Date:</label>
+                    <input type="date" id="from_date" class="">
+                    <label for="to_date" class="ms-2 me-2">To</label>
+                    <input type="date" id="to_date" class="">
+                    {{-- <div class="d-flex">
+                        <a href="" class="btn btn-primary">Completed</a>
+                        <a href="" class="btn btn-primary">Incomplete</a>
+                        <a href="{{route('admin.students.new')}}" class="btn btn-primary">Clear Filter</a>
+                    </div> --}}
+                </div>
+            </x-slot>
             @foreach ($students as $key => $item)
                 @php
                     $actions = [
@@ -102,6 +119,29 @@
                     }
                 });
             }
+            var table = {
+                from_date: '',
+                to_date: '',
+            }
+            $(document).ready(function() {
+                let from_date = new URLSearchParams(window.location.search).get("from_date");
+                let to_date = new URLSearchParams(window.location.search).get("to_date");
+                table.from_date = from_date ? from_date : '';
+                $('#from_date').val(from_date ? from_date : '');
+                table.to_date = to_date ? to_date : '';
+                $('#to_date').val(to_date ? to_date : '');
+
+            });
+            $('#from_date').on('change', function(e) {
+                e.preventDefault();
+                table.from_date = $(this).val();
+                getRecords();
+            });
+            $('#to_date').on('change', function(e) {
+                e.preventDefault();
+                table.to_date = $(this).val();
+                getRecords();
+            });
         </script>
     @endpush
 </x-app-layout>

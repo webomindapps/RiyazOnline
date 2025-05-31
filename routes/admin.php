@@ -36,6 +36,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/student/{id}/edit', [StudentController::class, 'edit'])->name('student.edit');
     Route::post('/student/{id}/edit', [StudentController::class, 'update']);
     Route::get('/student/{id}/details', [StudentController::class, 'details'])->name('student.details');
+    Route::get('/new-student-export', [StudentController::class, 'newStudentExport'])->name('students.new.export');
+    Route::get('/all-student-export', [StudentController::class, 'allStudentExport'])->name('students.all.export');
 
     // Country status
     Route::post('/country/status/change', [CountryController::class, 'stausChng'])->name('countries.change.status');
@@ -53,4 +55,7 @@ Route::middleware('auth')->group(function () {
 
     // Attrition Students
     Route::get('/disabled/students', [StudentController::class, 'disabledStudents'])->name('students.disabled');
+
+    // Invoice design
+    Route::get('/invoice/{id}/details', [StudentController::class, 'viewInvoice'])->name('invoice.show');
 });

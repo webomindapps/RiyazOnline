@@ -78,6 +78,6 @@ class CourseController extends Controller
     }
     public function export()
     {
-        return Excel::download(new CourseExport, 'courses.xlsx');
+        return Excel::download(new CourseExport, 'Courses.xlsx');
     }
 }

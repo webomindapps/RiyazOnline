@@ -13,6 +13,7 @@
     <!-- FontAwesome 5 CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('backend/css/style.css') }}">
+    <link rel="icon" href="{{ asset('frontend/favicon.ico') }}" type="image/x-icon">
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -56,7 +57,7 @@
                 $('#studentDetailModal').modal('show');
                 // For example:
                 $.ajax({
-                    url: '/admin/student/' + studentId + '/details', // Adjust this route
+                    url: '{{url("/")}}/admin/student/' + studentId + '/details', // Adjust this route
                     type: 'GET',
                     success: function(data) {
                         $('#student-detail-body').html(data.html);

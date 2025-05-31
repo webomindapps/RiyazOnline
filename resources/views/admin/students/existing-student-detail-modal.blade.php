@@ -6,7 +6,7 @@
         </div>
         <div class="">
             @if ($student->profile_picture)
-                <img src="{{ asset('storage/'.$student->profile_picture) }}" alt="" class="" width="50px">
+                <img src="{{ asset('storage/' . $student->profile_picture) }}" alt="" class="" width="50px">
             @else
                 <img src="{{ asset('frontend/user.png') }}" alt="" class="" width="50px">
             @endif
@@ -23,7 +23,8 @@
                 <p><b>Date of Register :</b> <span>{{ date('d-m-Y', strtotime($student->date)) }}</span></p>
                 <p><b>Gender :</b> <span>{{ $student->gender == 0 ? 'Male' : 'Female' }}</span></p>
                 <p><b>Country :</b> <span>{{ $student->country?->name }}</span></p>
-                <p><b>Due Date : </b> <span>{{ date('d-m-Y', strtotime($student->studentcourse->due_date)) }}</span></p>
+                <p class="text-danger"><b>Due Date : </b>
+                    <span>{{ date('d-m-Y', strtotime($student->studentcourse->due_date)) }}</span></p>
             </div>
             <div class="col-md-4 col-sm-6">
                 <p><b>DOB :</b> <span>{{ date('d-m-Y', strtotime($student->dob)) }}</span></p>
@@ -77,9 +78,9 @@
                         <td>Existing Registration</td>
                         <td>{{ date('d-m-Y', strtotime($course->paid_date)) }}</td>
                         <td>{{ $course->penalty_amount }}</td>
-                        <td>{{ $course->type?'Monthly':'Quarterly' }}</td>
+                        <td>{{ $course->type ? 'Monthly' : 'Quarterly' }}</td>
                         <td>
-                            <a class="text-primary" target="_blank" href="">Download</a>
+                            <a class="text-primary" target="_blank" href="{{ route('admin.invoice.show',$course->id) }}">Download</a>
                         </td>
                     </tr>
                 @endforeach

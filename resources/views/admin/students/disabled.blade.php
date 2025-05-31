@@ -7,11 +7,11 @@
                 ['label' => 'Sl No', 'column' => 'id', 'sort' => true],
                 ['label' => 'Roll No', 'column' => 'id', 'sort' => true],
                 ['label' => 'Name', 'column' => 'name', 'sort' => true],
-                ['label' => 'Course', 'column' => 'course_id', 'sort' => true],
-                ['label' => 'Date Of Joining', 'column' => 'date', 'sort' => true],
-                ['label' => 'Date Of Attrition', 'column' => 'status', 'sort' => true],
-                ['label' => 'Reason', 'column' => 'status', 'sort' => true],
-                ['label' => 'Enable', 'column' => 'date', 'sort' => true],
+                ['label' => 'Course', 'column' => 'course_id', 'sort' => false],
+                ['label' => 'Date Of Joining', 'column' => 'date_joining', 'sort' => true],
+                ['label' => 'Date Of Attrition', 'column' => 'attrition_date', 'sort' => true],
+                ['label' => 'Reason', 'column' => 'status', 'sort' => false],
+                ['label' => 'Enable', 'column' => 'date', 'sort' => false],
                 ['label' => 'Actions', 'column' => 'action', 'sort' => false],
             ];
 

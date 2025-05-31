@@ -46,10 +46,10 @@
                             <option value="1" {{ $student->country_id == 1 ? 'selected' : '' }}>India</option>
                         </select>
                     </div>
+                    <x-forms.input label="Student Photo" type="file" name="photo" id="photo" :required="false"
+                        size="col-lg-4 mt-4" :image="true" imageValue="{{ asset('storage/'.$student->profile_picture) }}" />
                     <x-forms.input label="Date Of Birth" type="date" name="dob" id="dob" :required="false"
                         size="col-lg-4 mt-4" :value="$student->dob" />
-                    <x-forms.input label="Student Photo" type="file" name="photo" id="photo" :required="false"
-                        size="col-lg-4 mt-4" :value="$student->photo" />
                     <div class="col-lg-4 mt-4" id="form-group-phone">
                         <label for="age" class="form-lable">
                             Age<span style="color: red">*</span>
@@ -74,9 +74,9 @@
                         </select>
                     </div>
                     <x-forms.input label="Father's name" type="text" name="father_name" id="father_name"
-                        :required="false" size="col-lg-6 mt-4" :value="$student->father_name" />
+                        :required="false" size="col-lg-4 mt-4" :value="$student->father_name" />
                     <x-forms.input label="Mother's name" type="text" name="mother_name" id="mother_name"
-                        :required="false" size="col-lg-6 mt-4" :value="$student->mother_name" />
+                        :required="false" size="col-lg-4 mt-4" :value="$student->mother_name" />
                     <x-forms.textarea label="Current Address" type="text" name="current_address" id="current_address"
                         :required="false" size="col-lg-6 mt-4" :value="$student->current_address" />
                     <x-forms.textarea label="Permanent Address" type="text" name="permanent_address"

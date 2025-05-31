@@ -49,7 +49,7 @@
                     <x-forms.input label="Student Photo" type="file" name="photo" id="photo" :required="false"
                         size="col-lg-4 mt-4" :value="old('photo')" />
                     <x-forms.input label="Registration Date" type="date" name="date_joining" id="date_joining"
-                        :required="true" size="col-lg-4 mt-4" :value="old('date_joining',date('Y-m-d'))" />
+                        :required="true" size="col-lg-4 mt-4" :value="old('date_joining', date('Y-m-d'))" />
                     <x-forms.input label="Date Of Birth" type="date" name="dob" id="dob" :required="false"
                         size="col-lg-4 mt-4" :value="old('dob')" />
                     <div class="col-lg-4 mt-4" id="form-group-phone">
@@ -102,7 +102,7 @@
                     <x-forms.select label="Student Type" name="payment_type" id="payment_type" :required="true"
                         size="col-lg-6 mt-4" :options="[['label' => 'Old Student', 'value' => 1], ['label' => 'New Student', 'value' => 0]]" :value="0" />
                     <x-forms.input label="Payment date" type="date" name="latest_paid_date" id="latest_paid_date"
-                        :required="true" size="col-lg-6 mt-4" :value="old('latest_paid_date',date('Y-m-d'))" />
+                        :required="true" size="col-lg-6 mt-4" :value="old('latest_paid_date', date('Y-m-d'))" />
                     <x-forms.input label="GST No. (Please mention your GST number if you are a registered GST user)"
                         type="text" name="gst_no" id="gst_no" :required="false" size="col-lg-6 mt-4"
                         :value="old('gst_no')" />

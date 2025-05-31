@@ -329,6 +329,10 @@ input:checked + .slider:before {
     padding: 5px 15px;
     background: #198754;
     color: #fff;
+    background-color: #2196F3;
+    border-color: #2196F3;
+    border-radius: 5px;
+    margin-left: 5px;
 }
 
 .custom_table thead tr th {
@@ -354,4 +358,18 @@ input[type="file"] {
 }
 .detail-modal table{
     font-size: 14px;
+}
+
+.custom_table .table .ar{
+    position: relative;
+    cursor: pointer;
+}
+.custom_table .table .ar:after{
+    position: absolute;
+    content: '\F698';
+    font-family: bootstrap-icons;
+    right: 5px;
+    top: 50%;
+    font-size: 10px;
+    transform: translateY(-50%);
 }

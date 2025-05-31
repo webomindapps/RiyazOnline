@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\NewStudentExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StudentRequest;
 use App\Models\Course;
 use App\Models\StudentCourseDetail;
 use App\Models\StudentDetail;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class StudentController extends Controller
 {
@@ -23,6 +26,8 @@ class StudentController extends Controller
         $order = request()->orderedColumn;
         $orderBy = request()->orderBy;
         $paginate = request()->paginate;
+        $fromDt = request()->from_date;
+        $toDt = request()->to_date;
 
         $query = $this->student->query();
         $query->where('status', 1);
@@ -32,6 +37,9 @@ class StudentController extends Controller
                 foreach ($searchColumns as $key => $value) ($key == 0) ? $q->where($value, 'LIKE', '%' . $search . '%') : $q->orWhere($value, 'LIKE', '%' . $search . '%');
             });
 
+        if ($fromDt && $toDt) {
+            $query->whereBetween('date', [$fromDt, $toDt]);
+        }
         // sorting
         ($order == '') ? $query->orderByDesc('id') : $query->orderBy($order, $orderBy);
 
@@ -139,6 +147,10 @@ class StudentController extends Controller
     {
         $data = $request->validated();
         $student = $this->student->find($id);
+        if ($request->file('photo')) {
+            $path = $request->file('photo')->store('photos', 'public');
+            $data['profile_picture'] = $path;
+        }
         $student->update($data);
         if ($data['date_joining']) {
             $student->update(['status' => 2]);
@@ -229,10 +241,12 @@ class StudentController extends Controller
             $studentCourse->update([
                 'date' => $date,
                 'paid_date' => $date,
+                'due_date' => Carbon::parse($date)->addMonth()->format('Y-m-d')
             ]);
         } else {
             $studentCourse->update([
                 'date' => $date,
+                'due_date' => Carbon::parse($date)->addMonth()->format('Y-m-d')
             ]);
         }
         $email = $student->email;
@@ -256,5 +270,37 @@ class StudentController extends Controller
                 'html' => view('admin.students.existing-student-detail-modal', compact('student'))->render()
             ];
         }
+    }
+    public function viewInvoice($id)
+    {
+        $studentCourse = StudentCourseDetail::with('student', 'course')->find($id);
+        $pdf = PDF::loadView('admin.students.invoice', compact('studentCourse'));
+        return view('admin.students.invoice', compact('studentCourse'));
+    }
+    public function newStudentExport(Request $request)
+    {
+        $searchColumns = ['id', 'name', 'phone', 'email', 'status'];
+        $search = request()->search;
+        $order = request()->orderedColumn;
+        $orderBy = request()->orderBy;
+        $fromDt = request()->from_date;
+        $toDt = request()->to_date;
+
+        $query = $this->student->query();
+        $query->where('status', 1);
+
+        if ($search != '')
+            $query->where(function ($q) use ($search, $searchColumns) {
+                foreach ($searchColumns as $key => $value) ($key == 0) ? $q->where($value, 'LIKE', '%' . $search . '%') : $q->orWhere($value, 'LIKE', '%' . $search . '%');
+            });
+
+        if ($fromDt && $toDt) {
+            $query->whereBetween('date', [$fromDt, $toDt]);
+        }
+        // sorting
+        ($order == '') ? $query->orderByDesc('id') : $query->orderBy($order, $orderBy);
+
+        $students = $query->get();
+        return Excel::download(new NewStudentExport($students), 'NewStudents.xlsx');
     }
 }

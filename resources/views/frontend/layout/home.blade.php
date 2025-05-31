@@ -11,6 +11,7 @@
         crossorigin>
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" />
     <link rel="stylesheet" href="{{ asset('frontend/style.css') }}">
+    <link rel="icon" href="{{ asset('frontend/favicon.ico') }}" type="image/x-icon">
 </head>
 
 <body class="bg-banner">

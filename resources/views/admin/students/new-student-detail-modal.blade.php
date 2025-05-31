@@ -72,7 +72,7 @@
                         <td>{{ $course->grand_total }}</td>
                         <td>{{ $course->type }}</td>
                         <td>
-                            <a class="text-primary" target="_blank" href="">Download</a>
+                            <a class="text-primary" target="_blank" href="{{ route('admin.invoice.show',$course->id) }}">Download</a>
                         </td>
                     </tr>
                 @endforeach

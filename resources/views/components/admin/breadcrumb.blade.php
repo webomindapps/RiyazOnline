@@ -10,10 +10,10 @@
                 <h5>{{ $title }}</h5>
             </div>
             <div class="col-lg-8 d-flex align-items-center justify-content-end">
-                @if (isset($isCreate) && $isCreate)
-                    <a href="{{ $createLink }}" class="add-btn">Add</a>
-                @endif
                 {{ $slot }}
+                @if (isset($isCreate) && $isCreate)
+                    <a href="{{ $createLink }}" class="add-btn"><i class="bi bi-folder-plus me-1"></i> Add</a>
+                @endif
             </div>
         </div>
     </div>

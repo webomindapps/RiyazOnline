@@ -3,9 +3,7 @@
     <input type="hidden" id="bulk_route" value="{{ $bulk }}">
     <div class="row mb-2">
         <div class="col-md-9">
-            @if (isset($filters))
-                {{ $filters }}
-            @endif
+            {{ $filters ?? '' }}
         </div>
         <div class="col-md-3">
             <form id="searchForm">
@@ -47,7 +45,7 @@
                         </th>
 
                         @foreach ($columns as $column)
-                            <th class="sorting" data-sort="{{ $column['sort'] }}" data-column="{{ $column['column'] }}"
+                            <th class="sorting {{ $column['sort']?'ar':'' }}" data-sort="{{ $column['sort'] }}" data-column="{{ $column['column'] }}"
                                 scope="col">
                                 {{ $column['label'] }}</th>
                         @endforeach

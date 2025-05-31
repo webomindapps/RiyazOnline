@@ -1,6 +1,8 @@
 <x-app-layout>
     <div class="m-3 bg-white">
-        <x-admin.breadcrumb title="Course List" isCreate="{{ true }}" createLink="{{ route('admin.courses.create') }}" />
+        <x-admin.breadcrumb title="Course List" isCreate="{{ true }}" createLink="{{ route('admin.courses.create') }}" >
+            <a href="{{ route('admin.courses.export') }}" class="add-btn"><i class="bi bi-file-earmark-arrow-down"></i> Download</a>
+        </x-admin.breadcrumb>
         @php
 
             $columns = [

@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\StudentCourseDetail;
 use App\Models\StudentDetail;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class PaymentReminderController extends Controller
 {
