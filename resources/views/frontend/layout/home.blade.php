@@ -1,56 +1,58 @@
 <!DOCTYPE html>
-<html xmlns="https://www.w3.org/1999/xhtml" dir="ltr" xml:lang="en-gb" lang="en-gb" />
+<html lang="en">
 
 <head>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Register Now | Riyaz Online</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.2/css/bootstrap.min.css" rel="stylesheet"
-        crossorigin>
-    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Select Your Course | Riyaaz Online</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
     <link rel="stylesheet" href="{{ asset('frontend/style.css') }}">
-    <link rel="icon" href="{{ asset('frontend/favicon.ico') }}" type="image/x-icon">
 </head>
 
-<body class="bg-banner">
-    <section>
+<body>
+    <!-- Responsive Header -->
+    <header class="header">
         <div class="container">
-            <div class="row">
-                <header class="bg-white shadow">
-                    <div class="col-lg-12">
-                        <div class="row">
-                            <div class="col-lg-4 col-md-4">
-                                <div class="logo-sec">
-                                    <a href="https://www.riyaazonline.com/">
-                                        <img src="{{ asset('frontend/logo.png') }}" class="img-fluid bg-white p-1"
-                                            style="height: 50px;">
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col-lg-8 col-md-8">
-                                <div class="menu-bar">
-                                    <ul>
-                                        <li>
-                                            <a href="https://www.riyaazonline.com/">Home</a>
-                                        </li>
-                                        <li>
-                                            <a href="{{ url('/') }}">New Students</a>
-                                        </li>
-                                        <li>
-                                            <a href="{{ route('existing.student') }}">Existing Students</a>
-                                        </li>
-                                    </ul>
-                                </div>
+            <nav class="navbar navbar-expand-lg p-0">
+                <div class="container-fluid p-0">
+                    <a class="navbar-brand" href="#">
+                        <img src="{{ asset('frontend/logo.png') }}" alt="Riyaaz Online" class="img-fluid" />
+                    </a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas"
+                        data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar"
+                        aria-labelledby="offcanvasNavbarLabel">
+                        <div class="offcanvas-header">
+                            <img src="{{ asset('frontend/logo.png') }}" alt="Riyaaz Online"
+                                class="img-fluid mobile-logo" />
+                            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="offcanvas-body">
+                            <div class="d-flex flex-column flex-lg-row ms-lg-auto">
+                                <a href="https://www.riyaazonline.com/"
+                                    class="btn nav-btn me-lg-2 mb-2 mb-lg-0">Home</a>
+                                <a href="{{ url('/') }}" class="btn nav-btn me-lg-2 mb-2 mb-lg-0">
+                                    New Students
+                                </a>
+                                <a href="{{ route('existing.student') }}" class="btn nav-btn me-lg-2 mb-2 mb-lg-0">Existing Students</a>
+                                <a href="{{ route('missing.class') }}" class="btn nav-btn me-lg-2 mb-2 mb-lg-0">Missing Class Terms</a>
                             </div>
                         </div>
                     </div>
-                </header>
-            </div>
-            {{ $slot }}
+                </div>
+            </nav>
         </div>
-    </section>
+    </header>
+
+    {{ $slot }}
     <!-- Modal -->
     <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -79,7 +81,8 @@
                 <div class="modal-body">
                     <img src="{{ asset('frontend/logo.png') }}" alt="logo">
                     <p class="mt-3" style="line-height: 25px;font-size: 20px;font-family: Open Sans, sans-serif;">
-                        Thank you for updating your details successfully ! Welcome Aboard ! <br>Please check your mail for further details......!</p>
+                        Thank you for updating your details successfully ! Welcome Aboard ! <br>Please check your mail
+                        for further details......!</p>
                 </div>
             </div>
         </div>
@@ -104,8 +107,27 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
         integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Close mobile menu when clicking a nav item
+        document.querySelectorAll(".nav-btn").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                const offcanvas = bootstrap.Offcanvas.getInstance(
+                    document.getElementById("offcanvasNavbar")
+                );
+                offcanvas.hide();
+            });
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+            anchor.addEventListener("click", function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute("href")).scrollIntoView({
+                    behavior: "smooth",
+                });
+            });
+        });
     </script>
     @stack('scripts')
     @if (Session::has('registered'))

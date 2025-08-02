@@ -9,7 +9,7 @@
             <form id="searchForm">
                 <label class="search_sec">
                     Search:
-                    <input type="search" id="searchBox" class="" placeholder="">
+                    <input type="search" id="searchBox" class="" placeholder="" autocomplete="off">
                 </label>
             </form>
         </div>
@@ -59,7 +59,9 @@
     </div>
     <div class="row text-center">
         <div class="col-lg-12">
-            {{ $data->links() }}
+            <div class="px-3">
+                {{ $data->links() }}
+            </div>
         </div>
     </div>
 

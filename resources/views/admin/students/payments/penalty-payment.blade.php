@@ -6,7 +6,7 @@
             $columns = [
                 ['label' => 'Sl No', 'column' => 'id', 'sort' => true],
                 ['label' => 'Roll No', 'column' => 'id', 'sort' => true],
-                ['label' => 'Name', 'column' => 'name', 'sort' => true],
+                ['label' => 'Name', 'column' => 'f_name', 'sort' => true],
                 ['label' => 'Mobile', 'column' => 'phone', 'sort' => true],
                 ['label' => 'Course & Fees', 'column' => 'course_id', 'sort' => false],
                 ['label' => 'Due Date', 'column' => 'due_date', 'sort' => true],
@@ -15,7 +15,7 @@
             ];
         @endphp
 
-        <x-table :columns="$columns" :data="$students" checkAll="{{ false }}" :bulk="route('admin.mails.index', ['customer' => 'bulk'])" :route="route('admin.mails.index')">
+        <x-table :columns="$columns" :data="$students" checkAll="{{ false }}" :bulk="route('admin.payments.penalty', ['customer' => 'bulk'])" :route="route('admin.payments.penalty')">
             @foreach ($students as $key => $item)
                 @php
                     $actions = [
@@ -43,7 +43,7 @@
                 <tr>
                     <td>{{ $key + 1 }}</td>
                     <td>{{ $item->id }}</td>
-                    <td>{{ $item->name }}</td>
+                    <td>{{ $item->f_name . ' ' . $item->l_name }}</td>
                     <td>{{ $item->phone }}</td>
                     <td>
                         {{ $item->studentcourse?->course_name }}<br>
@@ -55,7 +55,8 @@
                     </td>
                     <td>
                         Rs. {{ $penalty }}<br>
-                        <input type="number" style="width: 100px;height:30px;" value="{{$item->studentcourse?->penalty}}">
+                        <input type="number" style="width: 100px;height:30px;"
+                            value="{{ $item->studentcourse?->penalty }}">
                     </td>
                     <td>
                         <x-actions :item="$item" :options="$actions" />

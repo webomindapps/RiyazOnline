@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Mail\CompletedProfile;
 use App\Mail\CompleteRegisterMail;
+use App\Models\City;
 use App\Models\Country;
 use App\Models\Course;
+use App\Models\State;
 use App\Models\StudentCourseDetail;
 use App\Models\StudentDetail;
 use App\Models\TempStudent;
@@ -15,6 +17,7 @@ use DateTime;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 
 class HomeController extends Controller
@@ -27,13 +30,14 @@ class HomeController extends Controller
     public function courseDetails($id)
     {
         $course = Course::findOrFail($id);
-        $countries = Country::where('status', true)->get();
+        $countries = Country::all();
         return view('frontend.new-student', compact('course', 'countries'));
     }
     public function studentCreate(Request $request, $id)
     {
         $request->validate([
-            'name' => 'required',
+            'f_name' => 'required',
+            'l_name' => 'required',
             'age' => 'required',
             'email' => 'required|email',
             'phone' => 'required|regex:/^([1-9][0-9\s\-\+\(\)]*)$/|min:10',
@@ -43,12 +47,19 @@ class HomeController extends Controller
         $course = Course::find($id);
         $course_name = $course->course_name;
         $course_price = $course->new_student_fees;
-        $grand_total = $course_price;
+        $conv_fee = 0;
+        if ($request->country_id == "101") {
+            $conv_fee = $course->conv_indian;
+        } else {
+            $conv_fee = $course->conv_foreigner;
+        }
+        $grand_total = $course_price + $conv_fee;
         DB::beginTransaction();
         try {
             $order = TempStudent::create([
                 "user_id" => 1,
-                "name" => $request->name,
+                "f_name" => $request->f_name,
+                "l_name" => $request->l_name,
                 "email" => $request->email,
                 "age" => $request->age,
                 "phone" => $request->phone,
@@ -56,8 +67,10 @@ class HomeController extends Controller
                 "course" => $course_name,
                 "course_id" => $id,
                 "country_id" => $request->country_id,
-                "convenience_fees" => 0,
-                "total_fees" => $grand_total,
+                "state_id" => $request->state_id,
+                "city" => $request->city,
+                "convenience_fees" => $conv_fee,
+                "total_fees" => $course_price,
                 "gst_amount" => 0,
                 "grand_total" => $grand_total,
                 "date" => date("Y-m-d"),
@@ -70,9 +83,9 @@ class HomeController extends Controller
         }
         return view('frontend.checkout', compact('course', 'order'));
     }
-    public function studentStore(Request $request)
+    public function studentStore($temp_id)
     {
-        $order = TempStudent::find($request->temp_id);
+        $order = TempStudent::find($temp_id);
         if (is_null($order)) {
             return redirect()->route('home')->with('error', 'Something went wrong. Please try again.');
         }
@@ -80,12 +93,15 @@ class HomeController extends Controller
         DB::beginTransaction();
         try {
             $student = StudentDetail::create([
-                "name" => $order->name,
+                "f_name" => $order->f_name,
+                "l_name" => $order->l_name,
                 "email" => $order->email,
                 "age" => $order->age,
                 "phone" => $order->phone,
                 "phone_2" => $order->phone_two,
                 "country_id" => $order->country_id,
+                "state_id" => $order->state_id,
+                "city" => $order->city,
                 'status' => 1,
                 'date' => date("Y-m-d"),
                 'latest_paid_date' => date("Y-m-d"),
@@ -100,7 +116,7 @@ class HomeController extends Controller
                 'type' => 1,
                 'convenience_fees' => $order->convenience_fees,
                 'gst_amount' => $order->gst_amount,
-                'grand_total' => $order->total_fees,
+                'grand_total' => $order->grand_total,
                 'amount' => $order->total_fees,
                 'due_date' => Carbon::parse($order->date)->addMonth()->format('Y-m-d'),
                 'paid_date' => date("Y-m-d"),
@@ -118,13 +134,14 @@ class HomeController extends Controller
         Mail::to($order->email)->send(new CompleteRegisterMail($studentcourse));
         return redirect()->route('home')->with('registered', 'Student registered successfully. Please check your email for further details.');
     }
-    public function renewalStore(Request $request)
+    public function renewalStore($id)
     {
-        $course = Course::find($request->course_id);
+        $student = StudentDetail::find($id);
+        $course = $student->studentcourse?->course;
         $course_fee = $course->old_student_fees;
 
-        $sub_tot = $course_fee + $request->penalty;
-        $student = StudentDetail::find($request->student_id);
+        $sub_tot = $course_fee;
+        $total = $sub_tot + 100; // Adding convenience fees
         $invoice_no = $this->generateInvoiceNo();
         DB::beginTransaction();
         try {
@@ -135,10 +152,10 @@ class HomeController extends Controller
                 "invoice_no" => $invoice_no[0],
                 "financial_year" => $invoice_no[1],
                 'type' => 1,
-                'convenience_fees' => $request->conv_fee,
+                'convenience_fees' => 100,
                 'gst_amount' => 0,
-                'grand_total' => $sub_tot,
-                'amount' => $request->amount,
+                'grand_total' => $total,
+                'amount' => $sub_tot,
                 'due_date' => Carbon::parse($student->studentcourse?->due_date)->addMonth()->format('Y-m-d'),
                 'paid_date' => date("Y-m-d"),
                 'teacher' => "1",
@@ -219,56 +236,39 @@ class HomeController extends Controller
             return redirect()->route('existing.student')->with('notfound', 'student not found with this roll no & email');
         }
         $studentcourse = StudentCourseDetail::with('student', 'course')->where('student_id', $request->roll_no)->orderBy('id', 'DESC')->first();
-        $date1 = new DateTime($studentcourse->date);
-        $date2 = new DateTime(); // defaults to "now"
-        $diff = date_diff($date1, $date2);
-        $day_diff = $diff->format("%R%a");
-        $penalty = 0;
-        if ($studentcourse->student->penalty_congestion != 1) {
-            if ($day_diff >= 1 && $day_diff <= 7) {
-                if ($studentcourse->student->penalty_amount == "") {
-                    $penalty = 350;
-                } else {
-                    $penalty = $studentcourse->student->penalty_amount;
-                }
-            } else if ($day_diff >= 8 && $day_diff <= 14) {
-                if ($studentcourse->student->penalty_amount == "") {
-                    $penalty = 550;
-                } else {
-                    $penalty = $studentcourse->student->penalty_amount;
-                }
-            } else if ($day_diff >= 15 && $day_diff <= 21) {
-                if ($studentcourse->student->penalty_amount == "") {
-                    $penalty = 750;
-                } else {
-                    $penalty = $studentcourse->student->penalty_amount;
-                }
-            } else if ($day_diff >= 22 && $day_diff <= 28) {
-                if ($studentcourse->student->penalty_amount == "") {
-                    $penalty = 950;
-                } else {
-                    $penalty = $studentcourse->student->penalty_amount;
-                }
-            } else if ($day_diff >= 29) {
-                if ($studentcourse->student->penalty_amount == "") {
-                    $penalty = 1150;
-                } else {
-                    $penalty = $studentcourse->student->penalty_amount;
-                }
-            }
+        $paying_for = 1;
+        switch ($student->payment_type) {
+            case 0: // Guitar
+                $paying_for = 1;
+                break;
+            case 1: // Keyboard
+                $paying_for = 3;
+                break;
+            case 2: // Vocal
+                $paying_for = 6;
+                break;
+            default:
+                $paying_for = 1;
         }
         $due = $request->due ?? $studentcourse->date;
-        $total = $studentcourse->course->old_student_fees + $penalty;
-        $convfee = (($total) * 2.50) / 100;
-        $subTotal = $total - $convfee;
+        $subTotal = $studentcourse->course?->old_student_fees * $paying_for;
+        if ($student->country_id == 101) {
+            $covinence = $studentcourse->course?->conv_indian;
+        } else {
+            $covinence = $studentcourse->course?->conv_foreigner;
+        }
+        $convfee = $covinence * $paying_for; // Convenience fee is 100 per course
+        $total = $subTotal + $convfee;
         $request->session()->put('total', $total);
         $total = $request->session()->get('total');
-        return view('frontend.existing-student-step2', compact('studentcourse', 'penalty', 'total', 'convfee', 'subTotal', 'due'));
+        return view('frontend.existing-student-step2', compact('studentcourse', 'total', 'convfee', 'subTotal', 'due', 'paying_for', 'student'));
     }
     public function completeRegistrationView($id)
     {
+        $countries = Country::all();
         $student = StudentDetail::find($id);
-        return view('frontend.complete-registration', compact('student'));
+        $state = State::where('id', $student->state_id)->first();
+        return view('frontend.complete-registration', compact('student', 'countries', 'state'));
     }
     public function completeRegistration(Request $request, $id)
     {
@@ -280,7 +280,8 @@ class HomeController extends Controller
         try {
             $path = $request->file('photo')->store('photos', 'public');
             $student->update([
-                'name' => $request->name,
+                'f_name' => $request->f_name,
+                'l_name' => $request->l_name,
                 'email' => $request->email,
                 'phone' => $request->phone,
                 'phone_2' => $request->phone_2,
@@ -309,5 +310,52 @@ class HomeController extends Controller
         }
         Mail::to($student->email)->send(new CompletedProfile($student));
         return redirect()->route('home')->with('complete', 'Student registration completed successfully.');
+    }
+
+    public function sendSingleSms($userId, $password, $senderId, $phoneNumber, $message, $entityId, $templateId)
+    {
+        $encodedMessage = urlencode($message);
+        $encodedPassword = urlencode($password);
+
+        $response = Http::get('http://nimbusit.biz/api/SmsApi/SendSingleApi', [
+            'UserID'     => $userId,
+            'Password'   => $password,
+            'SenderID'   => $senderId,
+            'Phno'       => $phoneNumber,
+            'Msg'        => $message,
+            'EntityID'   => $entityId,
+            'TemplateID' => $templateId,
+        ]);
+
+        return $response->body();
+    }
+
+    public function sendSMS()
+    {
+        $userId = 'riyaazobiz';
+        $password = 'uebj8002UE';
+        $senderId = 'RYZONL';
+        $phoneNumber = '9668122651';
+        $message = 'Dear Dhruba, Greetings from RiyaazOnline music classes. Kindly note, that your fees due date is on 15-06-2025 of every month. Kindly make the payment on or before the due date to continue your lessons smoothly. Please ignore if already paid. Thank you';
+        $entityId = '1701172914234060146';
+        $templateId = '1707173821059462047';
+
+        $response = $this->sendSingleSms($userId, $password, $senderId, $phoneNumber, $message, $entityId, $templateId);
+        dd($response);
+    }
+
+    public function getStates($country_id)
+    {
+        $states = State::where('country_id', $country_id)->get();
+        return response()->json($states);
+    }
+    public function getCities($state_id)
+    {
+        $states = City::where('state_id', $state_id)->get();
+        return response()->json($states);
+    }
+    public function missingClass()
+    {
+        return view('frontend.missingclass');
     }
 }

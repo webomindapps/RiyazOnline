@@ -18,16 +18,22 @@
     <div class="modal-body detail-modal">
         <div class="row">
             <div class="col-md-4 col-sm-6">
-                <p><b>Name :</b> <span>{{ $student->name }}</span></p>
+                <p><b>Name :</b> <span>{{ $student->f_name . ' ' . $student->l_name }}</span></p>
                 <p><b>Contact No :</b> <span>{{ $student->phone }}</span></p>
                 <p><b>Date of Register :</b> <span>{{ date('d-m-Y', strtotime($student->date)) }}</span></p>
                 <p><b>Gender :</b> <span>{{ $student->gender == 0 ? 'Male' : 'Female' }}</span></p>
                 <p><b>Country :</b> <span>{{ $student->country?->name }}</span></p>
                 <p class="text-danger"><b>Due Date : </b>
-                    <span>{{ date('d-m-Y', strtotime($student->studentcourse->due_date)) }}</span></p>
+                    <span>{{ date('d-m-Y', strtotime($student->studentcourse->due_date)) }}</span>
+                </p>
             </div>
             <div class="col-md-4 col-sm-6">
-                <p><b>DOB :</b> <span>{{ date('d-m-Y', strtotime($student->dob)) }}</span></p>
+                <p>
+                    <b>DOB :</b>
+                    @if ($student->dob)
+                        <span>{{ date('d-m-Y', strtotime($student->dob)) }}</span>
+                    @endif
+                </p>
                 <p><b>Alt.Contact No :</b> <span>{{ $student->phone_2 }}</span></p>
             </div>
             <div class="col-md-4 col-sm-6">
@@ -42,13 +48,10 @@
             <div class="col-md-4 col-sm-6">
                 <p><b>Father Name :</b> <span>{{ $student->mother_name }}</span></p>
                 <p><b>Current Address :</b> <span>{{ $student->current_address }}</span></p>
-                <p><b>Office Contact No :</b> <span>{{ $student->office_no }}</span></p>
-                <p><b>Office Address :</b> <span>{{ $student->office_address }}</span></p>
             </div>
             <div class="col-md-4 col-sm-6">
                 <p><b>Mother Name :</b> <span>{{ $student->mother_name }}</span></p>
                 <p><b>Permanent Address :</b> <span>{{ $student->permanent_address }}</span></p>
-                <p><b>Occupation :</b> <span>{{ $student->occupation }}</span></p>
             </div>
             <div class="col-md-4 col-sm-6">
                 <p><b>Emg Contact Person :</b> <span>{{ $student->emg_contact_person }}</span></p>
@@ -80,7 +83,8 @@
                         <td>{{ $course->penalty_amount }}</td>
                         <td>{{ $course->type ? 'Monthly' : 'Quarterly' }}</td>
                         <td>
-                            <a class="text-primary" target="_blank" href="{{ route('admin.invoice.show',$course->id) }}">Download</a>
+                            <a class="text-primary" target="_blank"
+                                href="{{ route('admin.invoice.show', $course->id) }}">Download</a>
                         </td>
                     </tr>
                 @endforeach

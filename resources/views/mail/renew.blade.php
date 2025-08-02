@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riyaz Online</title>
+    <style type="text/css">
+        .borderappear {
+            border: none;
+        }
+
+        .centering {
+            text-align: center;
+        }
+
+        .dark {
+            font-weight: bold;
+        }
+
+        .bdtop {
+            border-top: none;
+        }
+
+        .bdbottom {
+            border-bottom: none;
+        }
+
+        .bdleft {
+            border-left: none;
+        }
+
+        .bdright {
+            border-right: none;
+        }
+
+        .right {
+            text-align: right;
+        }
+
+        .smallwidth {
+            width: 10px;
+        }
+
+        body {
+            padding: 0 !important;
+            margin: 0 !important;
+            display: block !important;
+            background: #ffffff;
+            -webkit-text-size-adjust: none;
+            font-family: arial;
+        }
+
+        a {
+            color: #00b8e4;
+            text-decoration: underline;
+            font-family: arial;
+        }
+
+        h3 a {
+            color: #1f1f1f;
+            text-decoration: none;
+            font-family: arial;
+        }
+
+        .text2 a {
+            color: #ea4261;
+            text-decoration: none;
+            font-family: arial;
+        }
+
+        /* Campaign Monitor wraps the text in editor in paragraphs. In order to preserve design spacing we remove the padding/margin */
+        p {
+            padding: 0 !important;
+            margin: 0 !important;
+            font-family: arial;
+        }
+
+        td {
+            padding: 5px !important;
+        }
+    </style>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+
+<body class="body" onload="window.print()"
+    style="
+      padding: 0 !important;
+      margin: 0 !important;
+      display: block !important;
+      background: #ffffff;
+      -webkit-text-size-adjust: none;
+    ">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff">
+        <tbody>
+            <tr>
+                <td align="center" valign="top">
+                    <table width="800" border="0" cellspacing="0" cellpadding="0" style="border: 1px solid #ccc">
+                        <!-- Header -->
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <table width="100%" border="0" cellspacing="0" cellpadding="0"
+                                        style="height: 30px">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <div style="font-size: 0pt; line-height: 0pt;height: 12px;">
+                                                    </div>
+                                                    <table width="100%" border="0" cellspacing="0"
+                                                        cellpadding="0">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td align="center">
+                                                                    <table border="0" cellspacing="0"
+                                                                        cellpadding="0">
+                                                                        <tbody></tbody>
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="center" bgcolor="#fff">
+                                    <table width="620" border="0" cellspacing="0" cellpadding="0">
+                                        <tbody>
+                                            <tr>
+                                                <td class="img"
+                                                    style="font-size: 0pt;line-height: 0pt;text-align: center;">
+                                                    <a href="https://webominddev.co.in/riyaz/public/">
+                                                        <img src="{{ asset('frontend/logo.png') }}" width="200"
+                                                            alt="" border="0" />
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                        <tbody>
+                                            <tr>
+                                                <td style="padding-left: 5%; padding-right: 5%">
+                                                    <h4 style="font-size: 18px;text-align: center;color: #db0100;">
+                                                        Receipt
+                                                    </h4>
+                                                    <div>
+                                                        <hr style="border-top: 1px solid #9b0000" />
+
+                                                        <div class="h2"
+                                                            style="color: #0064cd;font-family: Open Sans, Sans-serif, Helvetica,Arial;font-size: 26px;line-height: 24px;
+                                  text-align: center;
+                                  font-weight: bold;
+                                ">
+                                                            <div>
+                                                                <h3 style="font-family: arial; font-size: 25px">
+                                                                    Payment confirmation
+                                                                </h3>
+                                                            </div>
+                                                        </div>
+
+                                                        <div
+                                                            style="
+                                  color: #000;
+                                  font-size: 21px;
+                                  margin-top: 1%;
+                                  margin-bottom: 5%;
+                                ">
+                                                            <div
+                                                                style="
+                                    color: #000;
+                                    font-family: Tahoma;
+                                    font-size: 12px;
+                                    line-height: 18px;
+                                    text-align: justify;
+                                    padding: 0% 0% 0% 0%;
+                                  ">
+                                                                <div>
+
+                                                                    <div>
+                                                                        <p class="centering"
+                                                                            style="
+                                          font-weight: bold;
+                                          font-size: 20px;
+                                        ">
+                                                                            Invoice
+                                                                        </p>
+                                                                        <table width="100%" border="1"
+                                                                            style="
+                                          margin: 10px 0 10px;
+                                          border: 1px solid black;
+                                          border-collapse: collapse;
+                                          table-layout: fixed;
+                                        ">
+                                                                            <tr>
+                                                                                <td class="borderappear" bold
+                                                                                    colspan="4"
+                                                                                    style="font-weight: bold">
+                                                                                    Riyaz Online
+                                                                                </td>
+                                                                                <td colspan="2" class="bdbottom">
+                                                                                    Invoice No.
+                                                                                </td>
+                                                                                <td colspan="2" class="bdbottom">
+                                                                                    Roll No.
+                                                                                </td>
+                                                                                <td colspan="4" class="bdbottom">
+                                                                                    Dated
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td class="borderappear" colspan="4">
+                                                                                    Phone:+919620401420
+                                                                                    Email:riyaazonline@gmail.com
+                                                                                </td>
+                                                                                <td colspan="2" class="dark bdtop">
+                                                                                    {{ $details->invoice_no }}
+                                                                                </td>
+                                                                                <td colspan="2" class="dark bdtop">
+                                                                                    {{ $details->student_id }}
+                                                                                </td>
+                                                                                <td colspan="4" class="dark bdtop">
+                                                                                    {{ date('d-m-Y', strtotime($details->paid_date)) }}
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td colspan="4" class="bdbottom">
+                                                                                    Buyer:
+                                                                                    {{ $details->student?->f_name . ' ' . $details->student?->l_name }}
+                                                                                </td>
+                                                                                <td colspan="4"
+                                                                                    class="bdbottom bdtop">
+                                                                                    Phone:
+                                                                                    {{ $details->student?->phone }}
+                                                                                </td>
+                                                                                <td colspan="4"
+                                                                                    class="bdbottom bdtop">
+                                                                                    Email:
+                                                                                    {{ $details->student?->email }}
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td colspan="2" class="bdbottom">
+                                                                                    State Name :
+                                                                                </td>
+                                                                                <td colspan="2" class="bdbottom">
+                                                                                </td>
+                                                                                <td colspan="8" class="bdbottom">
+                                                                                    Terms of Delivery
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td colspan="2" class="bdbottom">
+                                                                                    Place of Supply :
+                                                                                </td>
+                                                                                <td colspan="2"
+                                                                                    class="bdbottom bdtop">
+                                                                                    Odisha
+                                                                                </td>
+                                                                                <td colspan="8" class="bdtop dark">
+                                                                                    Payment once made are not subject to
+                                                                                    refund.
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td colspan="1"
+                                                                                    class="bdbottom smallwidth">
+                                                                                    Sl NO
+                                                                                </td>
+                                                                                <td colspan="7" class="bdbottom">
+                                                                                    Course Name
+                                                                                </td>
+                                                                                <td colspan="2"
+                                                                                    class="bdbottom centering">
+                                                                                    Quantity
+                                                                                </td>
+                                                                                <td colspan="1"
+                                                                                    class="bdbottom centering">
+                                                                                    Rate
+                                                                                </td>
+                                                                                <td colspan="1"
+                                                                                    class="bdbottom centering">
+                                                                                    Amount
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td rowspan="1" class="dark">1
+                                                                                </td>
+                                                                                <td colspan="7"
+                                                                                    class="dark bdright">
+                                                                                    {{ $details->course_name }}
+                                                                                </td>
+                                                                                <td colspan="2" class="right">1
+                                                                                </td>
+                                                                                <td colspan="1" class="right">
+                                                                                    {{ $details->amount }}
+                                                                                </td>
+                                                                                <td colspan="1" class="dark right">
+                                                                                    {{ $details->amount }}
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td rowspan="3" class="dark">
+                                                                                </td>
+                                                                                <td colspan="7"
+                                                                                    class="dark bdright">
+                                                                                    Convenience Fees
+                                                                                </td>
+                                                                                <td colspan="2"></td>
+                                                                                <td colspan="1"></td>
+                                                                                <td colspan="1" class="dark right">
+                                                                                    {{ $details->convenience_fees }}
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td colspan="7"
+                                                                                    class="dark bdright">
+                                                                                    SubTotal
+                                                                                </td>
+                                                                                <td colspan="2"></td>
+                                                                                <td colspan="1"></td>
+                                                                                <td colspan="1" class="dark right">
+                                                                                    {{ $details->grand_total }}
+                                                                                </td>
+                                                                            </tr>
+
+                                                                            <tr>
+                                                                                <td colspan="7"
+                                                                                    class="dark bdright">
+                                                                                    Grand Total
+                                                                                </td>
+                                                                                <td colspan="2"></td>
+                                                                                <td colspan="1"></td>
+                                                                                <td colspan="1" class="dark right">
+                                                                                    ₹{{ $details->grand_total }}
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                @php
+                                                                                    $fmt = new \NumberFormatter(
+                                                                                        'en',
+                                                                                        \NumberFormatter::SPELLOUT,
+                                                                                    );
+                                                                                @endphp
+
+                                                                                <td colspan="12" class="dark">
+                                                                                    Amount Chargeable (in words) INR
+                                                                                    {{ ucfirst($fmt->format($details->grand_total)) }}
+                                                                                    only
+                                                                                </td>
+                                                                            </tr>
+
+                                                                            <tr>
+                                                                                <td colspan="5" rowspan="3">
+                                                                                    Payment Mode: Online
+                                                                                </td>
+                                                                                <td colspan="7"
+                                                                                    class="dark bdbottom">
+                                                                                    for Riyaz Online
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td colspan="7"
+                                                                                    class="bdbottom bdtop bdleft bdright centering">
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td colspan="7"
+                                                                                    class="bdtop bdright centering">
+                                                                                    Authorised Signatory
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td colspan="12" class="centering">
+                                                                                    This is a Computer Generated Invoice
+                                                                                </td>
+                                                                            </tr>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <br />
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                            <!-- END Content -->
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+
+</html>

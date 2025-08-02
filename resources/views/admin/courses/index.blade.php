@@ -9,7 +9,7 @@
                 ['label' => 'Sl No', 'column' => 'id', 'sort' => true],
                 ['label' => 'Course', 'column' => 'course_name', 'sort' => true],
                 ['label' => 'New Student Fee', 'column' => 'new_student_fees', 'sort' => true],
-                ['label' => 'Old Student Fee', 'column' => 'old_student_fees', 'sort' => true],
+                ['label' => 'Existing Student Fee', 'column' => 'old_student_fees', 'sort' => true],
                 ['label' => 'Status', 'column' => 'status', 'sort' => true],
                 ['label' => 'Position', 'column' => 'priority', 'sort' => true],
                 ['label' => 'Actions', 'column' => 'action', 'sort' => false],

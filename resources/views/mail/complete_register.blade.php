@@ -5,7 +5,7 @@
 <head>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
     <meta content="telephone=no" name="format-detection" />
-    <title>Riyaz Online</title>
+    <title>RiyazOnline</title>
     <style type="text/css">
         .borderappear {
             border: none;
@@ -208,7 +208,7 @@
                                                         <div style="margin-top:2%">
                                                             <p
                                                                 style="font-size: 16px;line-height: 1.5;text-align:left;">
-                                                                Team Riyaz</p>
+                                                                Team Riyaaz Online </p>
                                                         </div>
 
                                                         <br>

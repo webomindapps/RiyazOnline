@@ -28,7 +28,7 @@ class CompleteRegisterMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Complete Register Mail',
+            subject: 'Complete Your Registration',
         );
     }
 

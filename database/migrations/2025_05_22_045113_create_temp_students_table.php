@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('temp_students', function (Blueprint $table) {
             $table->id();
             $table->string('user_id');
-            $table->string('name');
+            $table->string('f_name');
+            $table->string('l_name');
             $table->string('email');
             $table->string('age');
             $table->string('phone');
@@ -22,6 +23,8 @@ return new class extends Migration
             $table->string('course');
             $table->unsignedBigInteger('course_id');
             $table->unsignedBigInteger('country_id');
+            $table->unsignedBigInteger('state_id')->nullable();
+            $table->string('city')->nullable();
             $table->float('convenience_fees');
             $table->float('total_fees');
             $table->float('gst_amount');

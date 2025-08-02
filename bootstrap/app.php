@@ -18,7 +18,10 @@ return Application::configure(basePath: dirname(__DIR__))
         },
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->validateCsrfTokens(except: [
+            '/payment/confirm/*',
+            '/renewal/payment/confirm/*'
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

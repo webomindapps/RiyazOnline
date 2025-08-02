@@ -155,14 +155,14 @@
                                                             style="color:#0064cd; font-family:Open Sans,Sans-serif,Helvetica,Arial; font-size:26px; line-height:24px; text-align:center; font-weight:bold">
                                                             <div>
                                                                 <h3 style="font-family: arial;font-size: 25px;">Payment
-                                                                    confirmation - Additional Details Required</h3>
+                                                                    confirmation</h3>
                                                             </div>
                                                         </div>
                                                         <div style="margin-top:2%">
                                                             <p
                                                                 style="font-size: 16px;line-height: 1.5;text-align:center">
                                                                 Thank you for registering with <a href=""
-                                                                    style="color:#db0100;text-decoration:none">Riyaz
+                                                                    style="color:#db0100;text-decoration:none">Riyaaz
                                                                     Online - New student registrations</a>. </p>
                                                         </div>
                                                         <div style="margin-top:2%">
@@ -198,6 +198,8 @@
                                                                             </tr>
                                                                             <tr>
                                                                                 <td class="borderappear" colspan="4">
+                                                                                    Phone:+919620401420
+                                                                                    Email:riyaazonline@gmail.com
                                                                                 </td>
                                                                                 <td colspan="2" class="dark bdtop">
                                                                                     {{ $student->studentcourse?->invoice_no }}
@@ -209,152 +211,75 @@
                                                                                 </td>
                                                                             </tr>
                                                                             <tr>
-                                                                                <td class="borderappear" colspan="4">
-
-                                                                                </td>
                                                                                 <td colspan="4" class="bdbottom">
-                                                                                    Delivery Note
-                                                                                </td>
-                                                                                <td colspan="4" class="bdbottom">
-                                                                                    Mode/Terms of Payment
-                                                                                </td>
-                                                                            </tr>
-                                                                            <tr>
-
-                                                                                <td class="borderappear" colspan="4">
-                                                                                </td>
-                                                                                <td colspan="4" class="bdtop">
-                                                                                </td>
-                                                                                <td colspan="4" class="bdtop">
-                                                                                    Online
-                                                                                </td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <td class="borderappear"
-                                                                                    colspan="4">State Name :
-                                                                                </td>
-                                                                                <td colspan="4" class="bdtop">
-                                                                                </td>
-                                                                                <td colspan="4" class="bdtop">
-                                                                                </td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <td class="borderappear"
-                                                                                    colspan="4">
-                                                                                    E-Mail:riyaazonline@gmail.com </td>
-                                                                                <td colspan="4" class="bdbottom">
-                                                                                    Buyer s Order No. </td>
-                                                                                <td colspan="4" class="bdbottom">
-                                                                                    Dated </td>
-
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <td colspan="4" class="bdbottom">
-                                                                                    Buyer:</td>
-                                                                                <td colspan="4"
-                                                                                    class="bdbottom bdtop"> </td>
-                                                                                <td colspan="4"
-                                                                                    class="bdbottom bdtop"> </td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <td colspan="4"
-                                                                                    class="bdtop bdbottom"
-                                                                                    class="bdbottom">
+                                                                                    Buyer:
                                                                                     {{ $student->name }}
                                                                                 </td>
-                                                                                <td colspan="4" class="bdbottom">
-                                                                                    Despatch Document No </td>
-                                                                                <td colspan="4" class="bdbottom">
-                                                                                    Delivery Note Date</td>
-                                                                            </tr>
-                                                                            <tr>
                                                                                 <td colspan="4"
-                                                                                    class="bdtop bdbottom"
-                                                                                    class="bdtop"> </td>
-                                                                                <td colspan="4" class="bdtop">
+                                                                                    class="bdbottom bdtop">
+                                                                                    Phone : {{ $student->phone }}
                                                                                 </td>
-                                                                                <td colspan="4" class="bdtop">
+                                                                                <td colspan="4"
+                                                                                    class="bdbottom bdtop">
+                                                                                    Email : {{ $student->email }}
                                                                                 </td>
                                                                             </tr>
                                                                             <tr>
-                                                                                <td colspan="4" class="bdtop">
-                                                                                    {{ $student->email }}
+                                                                                <td colspan="2" class="bdbottom">
+                                                                                    State Name :
                                                                                 </td>
-                                                                                <td colspan="4" class="bdbottom">
-                                                                                    Despatched through </td>
-                                                                                <td colspan="4" class="bdbottom">
-                                                                                    Destination
+                                                                                <td colspan="2" class="bdbottom">
                                                                                 </td>
-                                                                            </tr>
-
-                                                                            <tr>
-                                                                                <td colspan="2"
-                                                                                    class="bdbottom bdtop">State Name :
-                                                                                </td>
-                                                                                <td colspan="2"
-                                                                                    class="bdbottom bdtop"></td>
                                                                                 <td colspan="8" class="bdbottom">
-                                                                                    Terms of Delivery</td>
+                                                                                    Terms of Delivery
+                                                                                </td>
                                                                             </tr>
                                                                             <tr>
+                                                                                <td colspan="2" class="bdbottom">
+                                                                                    Place of Supply :
+                                                                                </td>
                                                                                 <td colspan="2"
-                                                                                    class="bdbottom bdtop">Place of
-                                                                                    Supply :</td>
-                                                                                <td colspan="2"
-                                                                                    class="bdbottom bdtop">Karnataka
+                                                                                    class="bdbottom bdtop">
+                                                                                    Odisha
                                                                                 </td>
                                                                                 <td colspan="8" class="bdtop dark">
                                                                                     Payment once made are not subject to
-                                                                                    refund.</td>
+                                                                                    refund.
+                                                                                </td>
                                                                             </tr>
                                                                             <tr>
                                                                                 <td colspan="1"
-                                                                                    class="bdbottom smallwidth">Sl NO
+                                                                                    class="bdbottom smallwidth">
+                                                                                    Sl NO
                                                                                 </td>
                                                                                 <td colspan="7" class="bdbottom">
+                                                                                    Course Name
                                                                                 </td>
-                                                                            
-                                                                                <td colspan="1"
-                                                                                    class="bdbottom centering">Quantity
-                                                                                </td>
-                                                                                <td colspan="1"
-                                                                                    class="bdbottom centering">Rate
+                                                                                <td colspan="2"
+                                                                                    class="bdbottom centering">
+                                                                                    Quantity
                                                                                 </td>
                                                                                 <td colspan="1"
-                                                                                    class="bdbottom centering">per</td>
+                                                                                    class="bdbottom centering">
+                                                                                    Rate
+                                                                                </td>
                                                                                 <td colspan="1"
-                                                                                    class="bdbottom centering">Amount
-                                                                                </td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <td colspan="1" class="bdtop">
-                                                                                </td>
-                                                                                <td colspan="7" class="bdtop">
-                                                                                </td>
-                                                                                <td colspan="1" class="bdtop">
-                                                                                </td>
-                                                                                <td colspan="1" class="bdtop">
-                                                                                </td>
-                                                                                <td colspan="1" class="bdtop">
-                                                                                </td>
-                                                                                <td colspan="1" class="bdtop">
+                                                                                    class="bdbottom centering">
+                                                                                    Amount
                                                                                 </td>
                                                                             </tr>
                                                                             <tr>
                                                                                 <td rowspan="1" class="dark">1
                                                                                 </td>
-                                                                                <td colspan="6"
+                                                                                <td colspan="7"
                                                                                     class="dark bdright">
                                                                                     {{ $student->studentcourse?->course_name }}
                                                                                 </td>
-                                                                                <td colspan="1" class="right">9992
+                                                                                <td colspan="2" class="right">1
                                                                                 </td>
-                                                                                <td colspan="1" class=" right">1
-                                                                                </td>
-                                                                                <td colspan="1" class=" right">
+                                                                                <td colspan="1" class="right">
                                                                                     {{ $student->studentcourse?->amount }}
                                                                                 </td>
-                                                                                <td colspan="1">1</td>
                                                                                 <td colspan="1" class="dark right">
                                                                                     {{ $student->studentcourse?->amount }}
                                                                                 </td>
@@ -362,22 +287,22 @@
                                                                             <tr>
                                                                                 <td rowspan="3" class="dark">
                                                                                 </td>
-                                                                                <td colspan="6"
-                                                                                    class="dark bdright">Convenience
-                                                                                    Fees</td>
-                                                                                <td colspan="1" class="right">
+                                                                                <td colspan="7"
+                                                                                    class="dark bdright">
+                                                                                    Convenience Fees
                                                                                 </td>
+                                                                                <td colspan="2"></td>
+                                                                                <td colspan="1"></td>
                                                                                 <td colspan="1" class="dark right">
                                                                                     {{ $student->studentcourse?->convenience_fees }}
                                                                                 </td>
                                                                             </tr>
                                                                             <tr>
-                                                                                <td colspan="6"
-                                                                                    class="dark bdright">SubTotal</td>
-                                                                                <td colspan="1" class="right">
+                                                                                <td colspan="7"
+                                                                                    class="dark bdright">
+                                                                                    SubTotal
                                                                                 </td>
-                                                                                <td colspan="1"></td>
-                                                                                <td colspan="1"></td>
+                                                                                <td colspan="2"></td>
                                                                                 <td colspan="1"></td>
                                                                                 <td colspan="1" class="dark right">
                                                                                     {{ $student->studentcourse?->grand_total }}
@@ -385,11 +310,11 @@
                                                                             </tr>
 
                                                                             <tr>
-                                                                                <td colspan="1"></td>
-                                                                                <td colspan="5"></td>
-                                                                                <td colspan="1"></td>
-                                                                                <td colspan="1"></td>
-                                                                                <td colspan="1"></td>
+                                                                                <td colspan="7"
+                                                                                    class="dark bdright">
+                                                                                    Grand Total
+                                                                                </td>
+                                                                                <td colspan="2"></td>
                                                                                 <td colspan="1"></td>
                                                                                 <td colspan="1" class="dark right">
                                                                                     ₹
@@ -397,10 +322,10 @@
                                                                                 </td>
                                                                             </tr>
                                                                             <tr>
-                                                                                <td colspan="4">Amount Chargeable
-                                                                                    (in words)</td>
-                                                                                <td colspan="8" class="dark">INR
+                                                                                <td colspan="12" class="dark">
+                                                                                    Amount Chargeable (in words) INR
                                                                                     {{ $student->studentcourse?->grand_total }}
+                                                                                    only
                                                                                 </td>
                                                                             </tr>
                                                                             <tr>
@@ -426,7 +351,6 @@
                                                                                     This is a Computer Generated Invoice
                                                                                 </td>
                                                                             </tr>
-
                                                                         </table>
                                                                     </div>
                                                                 </div>

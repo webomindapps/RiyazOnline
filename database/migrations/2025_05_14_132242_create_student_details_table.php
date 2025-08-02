@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('guru')->nullable();
             $table->unsignedBigInteger('country_id')->nullable();
-            $table->string('name');
+            $table->unsignedBigInteger('state_id')->nullable();
+            $table->string('f_name');
+            $table->string('l_name');
             $table->string('email');
             $table->string('phone');
             $table->string('phone_2')->nullable();
@@ -25,15 +27,13 @@ return new class extends Migration
             $table->string('profile_picture')->nullable();
             $table->string('father_name')->nullable();
             $table->string('mother_name')->nullable();
+            $table->string('city')->nullable();
             $table->text('current_address')->nullable();
             $table->text('permanent_address')->nullable();
             $table->string('emg_contact_no')->nullable();
             $table->string('emg_contact_person')->nullable();
             $table->string('emg_relation')->nullable();
             $table->string('student_whatsapp_no')->nullable();
-            $table->string('occupation')->nullable();
-            $table->string('office_no')->nullable();
-            $table->text('office_address')->nullable();
             $table->date('date')->nullable();
             $table->date('date_joining')->nullable();
             $table->integer('penalty_amount')->nullable();

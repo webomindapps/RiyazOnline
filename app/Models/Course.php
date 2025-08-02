@@ -11,6 +11,8 @@ class Course extends Model
         'description',
         'new_student_fees',
         'old_student_fees',
+        'conv_indian',
+        'conv_foreigner',
         'priority',
         'status',
     ];

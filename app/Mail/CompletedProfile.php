@@ -28,7 +28,7 @@ class CompletedProfile extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Completed Profile',
+            subject: 'Profile Updated Successfully',
         );
     }
 

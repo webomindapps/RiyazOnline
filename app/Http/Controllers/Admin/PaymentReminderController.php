@@ -12,7 +12,7 @@ class PaymentReminderController extends Controller
     public function __construct(public StudentCourseDetail $studentCourse, public StudentDetail $student) {}
     public function todayPayment()
     {
-        $searchColumns = ['id', 'name', 'phone', 'email', 'status'];
+        $searchColumns = ['id', 'f_name', 'l_name', 'phone', 'email', 'status'];
         $search = request()->search;
         $order = request()->orderedColumn;
         $orderBy = request()->orderBy;
@@ -23,6 +23,7 @@ class PaymentReminderController extends Controller
         if ($search != '')
             $query->where(function ($q) use ($search, $searchColumns) {
                 foreach ($searchColumns as $key => $value) ($key == 0) ? $q->where($value, 'LIKE', '%' . $search . '%') : $q->orWhere($value, 'LIKE', '%' . $search . '%');
+                $q->orWhereRaw("CONCAT(f_name, ' ', l_name) LIKE ?", ["%{$search}%"]);
             });
 
         // sorting
@@ -37,7 +38,7 @@ class PaymentReminderController extends Controller
     }
     public function tomorrowPayment()
     {
-        $searchColumns = ['id', 'name', 'phone', 'email', 'status'];
+        $searchColumns = ['id', 'f_name', 'l_name', 'phone', 'email', 'status'];
         $search = request()->search;
         $order = request()->orderedColumn;
         $orderBy = request()->orderBy;
@@ -48,6 +49,7 @@ class PaymentReminderController extends Controller
         if ($search != '')
             $query->where(function ($q) use ($search, $searchColumns) {
                 foreach ($searchColumns as $key => $value) ($key == 0) ? $q->where($value, 'LIKE', '%' . $search . '%') : $q->orWhere($value, 'LIKE', '%' . $search . '%');
+                $q->orWhereRaw("CONCAT(f_name, ' ', l_name) LIKE ?", ["%{$search}%"]);
             });
 
         // sorting
@@ -63,7 +65,7 @@ class PaymentReminderController extends Controller
     }
     public function threeDayPayment()
     {
-        $searchColumns = ['id', 'name', 'phone', 'email', 'status'];
+        $searchColumns = ['id', 'f_name', 'l_name', 'phone', 'email', 'status'];
         $search = request()->search;
         $order = request()->orderedColumn;
         $orderBy = request()->orderBy;
@@ -74,6 +76,7 @@ class PaymentReminderController extends Controller
         if ($search != '')
             $query->where(function ($q) use ($search, $searchColumns) {
                 foreach ($searchColumns as $key => $value) ($key == 0) ? $q->where($value, 'LIKE', '%' . $search . '%') : $q->orWhere($value, 'LIKE', '%' . $search . '%');
+                $q->orWhereRaw("CONCAT(f_name, ' ', l_name) LIKE ?", ["%{$search}%"]);
             });
 
         // sorting
@@ -89,7 +92,7 @@ class PaymentReminderController extends Controller
     }
     public function sevendayPayment()
     {
-        $searchColumns = ['id', 'name', 'phone', 'email', 'status'];
+        $searchColumns = ['id', 'f_name', 'l_name', 'phone', 'email', 'status'];
         $search = request()->search;
         $order = request()->orderedColumn;
         $orderBy = request()->orderBy;
@@ -100,6 +103,7 @@ class PaymentReminderController extends Controller
         if ($search != '')
             $query->where(function ($q) use ($search, $searchColumns) {
                 foreach ($searchColumns as $key => $value) ($key == 0) ? $q->where($value, 'LIKE', '%' . $search . '%') : $q->orWhere($value, 'LIKE', '%' . $search . '%');
+                $q->orWhereRaw("CONCAT(f_name, ' ', l_name) LIKE ?", ["%{$search}%"]);
             });
 
         // sorting
@@ -119,7 +123,7 @@ class PaymentReminderController extends Controller
 
         if (!is_null($request->name)) {
             $query->whereHas('student', function ($q) use ($request) {
-                $q->where('name', 'LIKE', '%' . $request->name . '%');
+                $q->where('f_name', 'LIKE', '%' . $request->name . '%');
             });
         }
 

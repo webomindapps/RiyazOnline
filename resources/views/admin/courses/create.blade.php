@@ -19,12 +19,16 @@
                         :required="true" size="col-lg-4 mt-4" :value="old('course_name')" />
                     <x-forms.input label="New Student Fees" type="number" name="new_student_fees" id="new_student_fees"
                         :required="true" size="col-lg-4 mt-4" :value="old('new_student_fees')" />
-                    <x-forms.input label="Old Student Fees" type="number" name="old_student_fees" id="old_student_fees"
-                        :required="true" size="col-lg-4 mt-4" :value="old('old_student_fees')" />
+                    <x-forms.input label="Existing Student Fees" type="number" name="old_student_fees"
+                        id="old_student_fees" :required="true" size="col-lg-4 mt-4" :value="old('old_student_fees')" />
                     <x-forms.input label="Priority" type="number" name="priority" id="priority" :required="true"
                         size="col-lg-4 mt-4" :value="old('priority')" />
                     <x-forms.select label="Status" name="status" id="status" :required="true" size="col-lg-4 mt-4"
                         :options="[['label' => 'Active', 'value' => 1], ['label' => 'In-Active', 'value' => 0]]" :value="1" />
+                    <x-forms.input label="Convinence Fee(Indian)" type="number" name="conv_indian" id="conv_indian"
+                        :required="true" size="col-lg-6 mt-4" :value="old('conv_indian')" />
+                    <x-forms.input label="Convinence Fee(Foreigner)" type="number" name="conv_foreigner"
+                        id="conv_foreigner" :required="true" size="col-lg-6 mt-4" :value="old('conv_foreigner')" />
                     <x-forms.textarea label="Course Description" type="text" name="description" id="description"
                         :required="true" size="col-lg-12 mt-4" :value="old('description')" />
                 </div>

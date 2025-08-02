@@ -26,6 +26,8 @@ class CourseRequest extends FormRequest
             'description' => 'required',
             'new_student_fees' => 'required|numeric',
             'old_student_fees' => 'required|numeric',
+            'conv_indian' => 'required|numeric',
+            'conv_foreigner' => 'required|numeric',
             'priority' => 'required|numeric',
             'status' => 'nullable'
         ];

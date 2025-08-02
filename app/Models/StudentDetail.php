@@ -9,7 +9,10 @@ class StudentDetail extends Model
     protected $fillable = [
         'guru',
         'country_id',
-        'name',
+        'state_id',
+        'city',
+        'f_name',
+        'l_name',
         'email',
         'phone',
         'phone_2',
@@ -25,9 +28,6 @@ class StudentDetail extends Model
         'emg_contact_person',
         'emg_relation',
         'student_whatsapp_no',
-        'occupation',
-        'office_no',
-        'office_address',
         'date',
         'date_joining',
         'penalty_amount',
@@ -50,7 +50,7 @@ class StudentDetail extends Model
     }
     public function studentcourses()
     {
-        return $this->hasMany(StudentCourseDetail::class, 'student_id', 'id')->orderBy('paid_date', 'DESC');
+        return $this->hasMany(StudentCourseDetail::class, 'student_id', 'id')->orderBy('paid_date', 'DESC')->orderBy('id', 'DESC');
     }
     public function course()
     {
@@ -59,5 +59,9 @@ class StudentDetail extends Model
     public function country()
     {
         return $this->belongsTo(Country::class, 'country_id', 'id');
+    }
+    public function getNameAttribute()
+    {
+        return "{$this->f_name} {$this->l_name}";
     }
 }

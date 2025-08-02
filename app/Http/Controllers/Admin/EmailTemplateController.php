@@ -53,4 +53,9 @@ class EmailTemplateController extends Controller
         $template->update($data);
         return redirect()->route('admin.templates.index')->with('success', 'Template updated successfully.');
     }
+    public function getData(){
+        $id = request()->id;
+        $template = $this->template->findOrFail($id);
+        return response()->json(['content' => $template->content]);
+    }
 }

@@ -37,7 +37,7 @@
             ];
         @endphp
 
-        <x-table :columns="$columns" :data="$students" checkAll="{{ false }}" :bulk="route('admin.mails.index', ['customer' => 'bulk'])" :route="route('admin.mails.index')">
+        <x-table :columns="$columns" :data="$students" checkAll="{{ false }}" :bulk="route('admin.students.disabled', ['customer' => 'bulk'])" :route="route('admin.students.disabled')">
             @foreach ($students as $key => $item)
                 @php
                     $actions = [
@@ -55,7 +55,7 @@
                     <td>{{ date('d-m-Y', strtotime($item->date_joining)) }}</td>
                     <td>{{ date('d-m-Y', strtotime($item->attrition_date)) }}</td>
                     <td>
-                        <textarea name="" rows="1">{{$item->comment}}</textarea>
+                        <textarea name="" rows="1">{{ $item->comment }}</textarea>
                     </td>
                     <td>
                         <label class="switch">
@@ -89,6 +89,20 @@
                     error: function(xhr, ajaxOptions, thrownError) {}
                 });
             }
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.1/bootstrap3-typeahead.min.js"></script>
+        <script type="text/javascript">
+            var route = "{{ url('autocomplete-search') }}";
+            $('#searchBox').typeahead({
+                name: 'name',
+                source: function(query, process) {
+                    return $.get(route, {
+                        query: query
+                    }, function(data) {
+                        return process(data);
+                    });
+                }
+            });
         </script>
     @endpush
 </x-app-layout>

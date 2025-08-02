@@ -6,7 +6,7 @@
             $columns = [
                 ['label' => 'Sl No', 'column' => 'id', 'sort' => true],
                 ['label' => 'Roll No', 'column' => 'id', 'sort' => false],
-                ['label' => 'Name', 'column' => 'name', 'sort' => false],
+                ['label' => 'Name', 'column' => 'f_name', 'sort' => false],
                 ['label' => 'Mobile', 'column' => 'phone', 'sort' => false],
                 ['label' => 'Course', 'column' => 'course_id', 'sort' => false],
                 ['label' => 'Course Fee', 'column' => 'grand_total', 'sort' => true],
@@ -15,7 +15,7 @@
             ];
         @endphp
 
-        <x-table :columns="$columns" :data="$studentCourses" checkAll="{{ false }}" :bulk="route('admin.mails.index', ['customer' => 'bulk'])" :route="route('admin.mails.index')">
+        <x-table :columns="$columns" :data="$studentCourses" checkAll="{{ false }}" :bulk="route('admin.payments.sevenday', ['customer' => 'bulk'])" :route="route('admin.payments.sevenday')">
             @foreach ($studentCourses as $key => $item)
                 @php
                     $actions = [
@@ -28,7 +28,7 @@
                 <tr>
                     <td>{{ $key + 1 }}</td>
                     <td>{{ $item->id }}</td>
-                    <td>{{ $item->student?->name }}</td>
+                    <td>{{ $item->student?->f_name . ' ' . $item->student?->l_name }}</td>
                     <td>{{ $item->student?->phone }}</td>
                     <td>{{ $item->course?->course_name }}</td>
                     <td>{{ $item->grand_total }}</td>
