@@ -23,6 +23,9 @@ class StudentDetail extends Model
         'father_name',
         'mother_name',
         'current_address',
+        'p_country_id',
+        'p_state_id',
+        'p_city',
         'permanent_address',
         'emg_contact_no',
         'emg_contact_person',
@@ -59,6 +62,18 @@ class StudentDetail extends Model
     public function country()
     {
         return $this->belongsTo(Country::class, 'country_id', 'id');
+    }
+    public function state()
+    {
+        return $this->belongsTo(State::class, 'state_id', 'id');
+    }
+    public function pcountry()
+    {
+        return $this->belongsTo(Country::class, 'p_country_id', 'id');
+    }
+    public function pstate()
+    {
+        return $this->belongsTo(State::class, 'p_state_id', 'id');
     }
     public function getNameAttribute()
     {

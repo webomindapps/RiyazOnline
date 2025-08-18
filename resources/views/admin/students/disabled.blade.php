@@ -55,7 +55,7 @@
                     <td>{{ date('d-m-Y', strtotime($item->date_joining)) }}</td>
                     <td>{{ date('d-m-Y', strtotime($item->attrition_date)) }}</td>
                     <td>
-                        <textarea name="" rows="1">{{ $item->comment }}</textarea>
+                        <textarea id="comm_{{ $item->id }}" onchange="update_comment({{ $item->id }});" rows="1">{{ $item->comment }}</textarea>
                     </td>
                     <td>
                         <label class="switch">
@@ -103,6 +103,23 @@
                     });
                 }
             });
+            function update_comment(id) {
+                value = $("#comm_" + id).val();
+                jQuery.ajax({
+                    type: "POST",
+                    url: "{{ route('admin.student.comment.update') }}",
+                    datatype: "text",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        id: id,
+                        comment: value
+                    },
+                    success: function(response) {
+                        alert("Updated Successfully");
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {}
+                });
+            }
         </script>
     @endpush
 </x-app-layout>

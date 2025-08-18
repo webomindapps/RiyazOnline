@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ExamRegistrationMail;
 use App\Mail\RenewMail;
 use App\Models\AdminMail;
+use App\Models\ExamRegistration;
 use App\Models\PaymentDetail;
 use App\Models\StudentCourseDetail;
 use App\Models\StudentDetail;
@@ -131,7 +133,7 @@ class PaymentController extends Controller
                 DB::rollback();
                 dd($e);
             }
-            $emails=AdminMail::where('status',1)->pluck('email')->toArray();
+            $emails = AdminMail::where('status', 1)->pluck('email')->toArray();
             $emails[] = $student->email;
             Mail::to($emails)->send(new RenewMail($studentcourse));
             return redirect()->route('home')->with('renewed', 'Student course renewed successfully. Please check your email for further details.');
@@ -178,5 +180,57 @@ class PaymentController extends Controller
         $invoiceNo = "{$prefix}/{$financialYear}/{$formattedNumber}";
 
         return [$invoiceNo, $financialYear];
+    }
+    public function examPaymentInitiate(Request $request)
+    {
+        $key_id = env('RAZORPAY_KEY_ID');
+        $secret = env('RAZORPAY_SECRET_KEY');
+        $api = new Api($key_id, $secret);
+        $student = StudentDetail::find($request->student_id);
+        $total = $request->total;
+        $order = $api->order->create([
+            'receipt' => $request->student_id,
+            'amount' => (float) $total * 100,
+            'currency' => 'INR',
+            'notes' => [
+                'student_id'   => $request->student_id,
+                'exam_fee' => $request->exam_fee,
+                'conv_fee' => $request->conv_fee,
+                'total' => $request->total,
+            ]
+        ]);
+        return view('frontend.exam-payment', compact('order', 'student', 'total'));
+    }
+    public function examPaymentConfirm(Request $request, $id)
+    {
+        $key_id = env('RAZORPAY_KEY_ID');
+        $secret = env('RAZORPAY_SECRET_KEY');
+        $api = new Api($key_id, $secret);
+        $response = $api->payment->fetch($request->razorpay_payment_id);
+        $amount = $response->amount / 100;
+        if ($response->status == "captured") {
+            DB::beginTransaction();
+            try {
+                $student = StudentDetail::find($id);
+                ExamRegistration::create([
+                    'student_id' => $id,
+                    'payment_date' => date('Y-m-d'),
+                    'exam_fee' => $response->notes?->exam_fee,
+                    'convience_fee' => $response->notes?->conv_fee,
+                    'total' => $response->notes?->total,
+                    'payment_status' => true
+                ]);
+                DB::commit();
+            } catch (Exception $e) {
+                DB::rollback();
+                dd($e);
+            }
+            $emails = AdminMail::where('status', 1)->pluck('email')->toArray();
+            $emails[] = $student->email;
+            Mail::to($emails)->send(new ExamRegistrationMail($student));
+            return redirect()->route('home')->with('renewed', 'Registration Successfull Please check your mail for confirmation');
+        } else {
+            return redirect('/')->with('error', 'Payment failed');
+        }
     }
 }

@@ -402,6 +402,7 @@ class StudentController extends Controller
         $query = $request->get('query');
         $filterResult = StudentDetail::selectRaw("CONCAT(f_name, ' ', l_name) AS full_name")
             ->whereRaw("CONCAT(f_name, ' ', l_name) LIKE ?", ["%{$query}%"])
+            ->where('status','!=',3)
             ->pluck('full_name');
         return response()->json($filterResult);
     }
@@ -412,7 +413,7 @@ class StudentController extends Controller
     }
     public function getDetailsByRoll($id)
     {
-        $student = $this->student->with('studentcourse')->find($id);
+        $student = $this->student->with('studentcourse','course')->find($id);
 
         if ($student) {
             return response()->json([
@@ -479,5 +480,20 @@ class StudentController extends Controller
             DB::rollback();
             return redirect()->back()->withErrors(['error' => 'Failed to renew student: ' . $e->getMessage()]);
         }
+    }
+
+    public function updateComment(Request $request)
+    {
+        $id = $request->id;
+        $comment = $request->comment;
+
+        $student = $this->student->find($id);
+        if (!$student) {
+            return response()->json(['error' => 'Student not found'], 404);
+        }
+
+        $student->update(['comment' => $comment]);
+
+        return response()->json(['success' => 'Comment updated successfully']);
     }
 }

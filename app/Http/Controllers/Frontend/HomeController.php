@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Mail\CompletedProfile;
 use App\Mail\CompleteRegisterMail;
+use App\Mail\NewRegistration;
+use App\Models\AdminMail;
 use App\Models\City;
 use App\Models\Country;
 use App\Models\Course;
@@ -49,9 +51,9 @@ class HomeController extends Controller
         $course_price = $course->new_student_fees;
         $conv_fee = 0;
         if ($request->country_id == "101") {
-            $conv_fee = $course->conv_indian;
+            $conv_fee = ($course_price * $course->conv_indian) / 100;
         } else {
-            $conv_fee = $course->conv_foreigner;
+            $conv_fee = ($course_price * $course->conv_foreigner) / 100;
         }
         $grand_total = $course_price + $conv_fee;
         DB::beginTransaction();
@@ -132,6 +134,9 @@ class HomeController extends Controller
             dd($e);
         }
         Mail::to($order->email)->send(new CompleteRegisterMail($studentcourse));
+        $emails = AdminMail::where('status', 1)->pluck('email')->toArray();
+        $emails[] = $student->email;
+        Mail::to($emails)->send(new NewRegistration($student));
         return redirect()->route('home')->with('registered', 'Student registered successfully. Please check your email for further details.');
     }
     public function renewalStore($id)
@@ -222,7 +227,7 @@ class HomeController extends Controller
             'email' => 'required|email',
             'roll_no' => 'required',
         ]);
-        $student = StudentDetail::where('email', $request->email)->where('id', $request->roll_no)->with('studentcourse')->first();
+        $student = StudentDetail::where('email', $request->email)->where('id', $request->roll_no)->where('status', '!=', 3)->with('studentcourse')->first();
         if ($student) {
             return response()->json(['status' => true, 'data' => $student]);
         } else {
@@ -231,7 +236,7 @@ class HomeController extends Controller
     }
     public function getCourseDetails(Request $request)
     {
-        $student = StudentDetail::where('id', $request->roll_no)->where('email', $request->email)->first();
+        $student = StudentDetail::where('id', $request->roll_no)->where('email', $request->email)->where('status', '!=', 3)->first();
         if (is_null($student)) {
             return redirect()->route('existing.student')->with('notfound', 'student not found with this roll no & email');
         }
@@ -253,9 +258,9 @@ class HomeController extends Controller
         $due = $request->due ?? $studentcourse->date;
         $subTotal = $studentcourse->course?->old_student_fees * $paying_for;
         if ($student->country_id == 101) {
-            $covinence = $studentcourse->course?->conv_indian;
+            $covinence = ($studentcourse->course?->old_student_fees * $studentcourse->course?->conv_indian) / 100;
         } else {
-            $covinence = $studentcourse->course?->conv_foreigner;
+            $covinence = ($studentcourse->course?->old_student_fees * $studentcourse->course?->conv_foreigner) / 100;
         }
         $convfee = $covinence * $paying_for; // Convenience fee is 100 per course
         $total = $subTotal + $convfee;
@@ -291,8 +296,13 @@ class HomeController extends Controller
                 'gender' => $request->gender,
                 'father_name' => $request->father_name,
                 'mother_name' => $request->mother_name,
+                'country_id' => $request->country_id,
+                'state_id' => $request->state_id,
+                'city' => $request->city,
                 'current_address' => $request->current_address,
-                'permanent_address' => $request->permanent_address,
+                'p_country_id' => $request->p_country_id,
+                'p_state_id' => $request->p_state_id,
+                'p_city' => $request->p_city,
                 'permanent_address' => $request->permanent_address,
                 'emg_contact_person' => $request->emg_contact_person,
                 'emg_contact_no' => $request->emg_contact_no,
@@ -308,7 +318,9 @@ class HomeController extends Controller
             DB::rollback();
             dd($e);
         }
-        Mail::to($student->email)->send(new CompletedProfile($student));
+        $emails = AdminMail::where('status', 1)->pluck('email')->toArray();
+        $emails[] = $student->email;
+        Mail::to($emails)->send(new CompletedProfile($student));
         return redirect()->route('home')->with('complete', 'Student registration completed successfully.');
     }
 
@@ -357,5 +369,25 @@ class HomeController extends Controller
     public function missingClass()
     {
         return view('frontend.missingclass');
+    }
+    public function examRegistrationPage()
+    {
+        return view('frontend.exam-form');
+    }
+    public function examPaymentPage(Request $request)
+    {
+        $student = StudentDetail::where('email', $request->email)->where('id', $request->roll_no)->where('status', '!=', 3)->first();
+        if ($student) {
+            if ($student->country_id == 101) {
+                $convfee = (1500 * 3) / 100;
+            } else {
+                $convfee = (1500 * 4) / 100;
+            }
+            $exam_fee = 1500; // Convenience fee is 100 per course
+            $total = $exam_fee + $convfee;
+            return view('frontend.exam-prices', compact('student', 'exam_fee', 'convfee', 'total'));
+        } else {
+            return response()->json(['status' => false, 'message' => 'No student found.']);
+        }
     }
 }

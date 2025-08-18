@@ -6,7 +6,9 @@
         </div>
         <div class="">
             @if ($student->profile_picture)
-                <img src="{{ asset('storage/' . $student->profile_picture) }}" alt="" class="" width="50px">
+                <a data-fancybox="gallery" data-src="{{ asset('storage/' . $student->profile_picture) }}">
+                    <img src="{{ asset('storage/' . $student->profile_picture) }}" alt="" class="" width="50px">
+                </a>
             @else
                 <img src="{{ asset('frontend/user.png') }}" alt="" class="" width="50px">
             @endif
@@ -22,7 +24,6 @@
                 <p><b>Contact No :</b> <span>{{ $student->phone }}</span></p>
                 <p><b>Date of Register :</b> <span>{{ date('d-m-Y', strtotime($student->date)) }}</span></p>
                 <p><b>Gender :</b> <span>{{ $student->gender == 0 ? 'Male' : 'Female' }}</span></p>
-                <p><b>Country :</b> <span>{{ $student->country?->name }}</span></p>
                 <p class="text-danger"><b>Due Date : </b>
                     <span>{{ date('d-m-Y', strtotime($student->studentcourse->due_date)) }}</span>
                 </p>
@@ -46,17 +47,27 @@
         <h4 class="text-semibold">Personal Details</h4>
         <div class="row">
             <div class="col-md-4 col-sm-6">
-                <p><b>Father Name :</b> <span>{{ $student->mother_name }}</span></p>
+                @if($student->age != 'Adult')
+                    <p><b>Father Name :</b> <span>{{ $student->father_name }}</span></p>
+                @endif
+                <p><b>Current Country :</b> <span>{{ $student->country?->name }}</span></p>
+                <p><b>Current State :</b> <span>{{ $student->state?->name }}</span></p>
+                <p><b>Current City :</b> <span>{{ $student->city }}</span></p>
                 <p><b>Current Address :</b> <span>{{ $student->current_address }}</span></p>
             </div>
             <div class="col-md-4 col-sm-6">
-                <p><b>Mother Name :</b> <span>{{ $student->mother_name }}</span></p>
+                @if($student->age != 'Adult')
+                    <p><b>Mother Name :</b> <span>{{ $student->mother_name }}</span></p>
+                @endif
+                <p><b>Permanent Country :</b> <span>{{ $student->pcountry?->name }}</span></p>
+                <p><b>Permanent State :</b> <span>{{ $student->pstate?->name }}</span></p>
+                <p><b>Permanent City :</b> <span>{{ $student->p_city }}</span></p>
                 <p><b>Permanent Address :</b> <span>{{ $student->permanent_address }}</span></p>
             </div>
             <div class="col-md-4 col-sm-6">
                 <p><b>Emg Contact Person :</b> <span>{{ $student->emg_contact_person }}</span></p>
-                <p><b>Emg Contact No :</b> <span>{{ $student->emg_contact_no }}</span></p>
                 <p><b>Emg Relationship :</b> <span>{{ $student->emg_relation }}</span></p>
+                <p><b>Emg Contact No :</b> <span>{{ $student->emg_contact_no }}</span></p>
             </div>
         </div>
         <hr>

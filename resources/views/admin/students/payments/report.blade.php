@@ -22,6 +22,23 @@
                     <input type="date" id="from_date" class="">
                     <label for="to_date" class="ms-2 me-2">To</label>
                     <input type="date" id="to_date" class="">
+                    <div class="ms-4">
+                        <select name="month" id="month">
+                            <option value="">Select month</option>
+                            <option value="1" {{request()->month==1?'selected':''}}>January</option>
+                            <option value="2" {{request()->month==2?'selected':''}}>February</option>
+                            <option value="3" {{request()->month==3?'selected':''}}>March</option>
+                            <option value="4" {{request()->month==4?'selected':''}}>April</option>
+                            <option value="5" {{request()->month==5?'selected':''}}>May</option>
+                            <option value="6" {{request()->month==6?'selected':''}}>June</option>
+                            <option value="7" {{request()->month==7?'selected':''}}>July</option>
+                            <option value="8" {{request()->month==8?'selected':''}}>August</option>
+                            <option value="9" {{request()->month==9?'selected':''}}>September</option>
+                            <option value="10" {{request()->month==10?'selected':''}}>October</option>
+                            <option value="11" {{request()->month==11?'selected':''}}>November</option>
+                            <option value="12" {{request()->month==12?'selected':''}}>December</option>
+                        </select>
+                    </div>
                 </div>
             </x-slot>
             @foreach ($reports as $key => $item)
@@ -53,14 +70,18 @@
             var table = {
                 from_date: '',
                 to_date: '',
+                month: '',
             }
             $(document).ready(function() {
                 let from_date = new URLSearchParams(window.location.search).get("from_date");
                 let to_date = new URLSearchParams(window.location.search).get("to_date");
+                let month = new URLSearchParams(window.location.search).get("month");
                 table.from_date = from_date ? from_date : '';
                 $('#from_date').val(from_date ? from_date : '');
                 table.to_date = to_date ? to_date : '';
                 $('#to_date').val(to_date ? to_date : '');
+                table.month = month ? month : '';
+                $('#month').val(month ? month : '');
 
             });
             $('#from_date').on('change', function(e) {
@@ -71,6 +92,11 @@
             $('#to_date').on('change', function(e) {
                 e.preventDefault();
                 table.to_date = $(this).val();
+                getRecords();
+            });
+            $('#month').on('change', function(e) {
+                e.preventDefault();
+                table.month = $(this).val();
                 getRecords();
             });
         </script>

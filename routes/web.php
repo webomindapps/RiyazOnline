@@ -23,6 +23,11 @@ Route::get('/complete/{id}/registration', [HomeController::class, 'completeRegis
 Route::post('/complete/{id}/registration', [HomeController::class, 'completeRegistration']);
 Route::get('/missing-a-class', [HomeController::class, 'missingClass'])->name('missing.class');
 Route::get('/autocomplete-search', [StudentController::class, 'autocompleteSearch']);
+Route::get('/exam-registration', [HomeController::class, 'examRegistrationPage'])->name('exam.registration');
+Route::post('/exam-registration', [HomeController::class, 'examPaymentPage']);
+Route::post('/exam-payment', [PaymentController::class, 'examRegistrationStore']);
+Route::post('/exam/payment-initiate', [PaymentController::class, 'examPaymentInitiate'])->name('exam.payment.initiate');
+Route::post('/exam/payment/confirm/{id}', [PaymentController::class, 'examPaymentConfirm'])->name('exam.payment.confirm');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

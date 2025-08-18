@@ -27,6 +27,7 @@
                                             <div class="plan-body">
                                                 <div class="plan-price">₹ {{ $course->new_student_fees }}
                                                     <span>/-</span>
+                                                    <p style="font-size:13px;" class="float-brak">( Includes a one-time registration fee of ₹1,000/- )</p>
                                                 </div>
                                                 <p class="plan-desc">
                                                     {{ $course->description }}
@@ -46,6 +47,22 @@
         </div>
     </main>
     <style>
+        /* .plan-body {
+            padding: 20px !important;
+        }
+        .float-brak{
+            position: relative;
+        }
+        .float-brak::before {
+            content: "(";
+            position: absolute;
+            left: -8px;
+        }
+        .float-brak::after {
+            content: ")";
+            position: absolute;
+            right: -8px;
+        } */
         @import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
         @import url("https://fonts.googleapis.com/css2?family=Lobster&family=Lobster+Two:ital,wght@0,400;0,700;1,400;1,700&display=swap");

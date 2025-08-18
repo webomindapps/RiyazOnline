@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\CountryController;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EmailTemplateController;
+use App\Http\Controllers\Admin\ExamController;
 use App\Http\Controllers\Admin\PaymentReminderController;
 use App\Http\Controllers\Admin\StudentController;
 use Illuminate\Support\Facades\Route;
@@ -42,6 +43,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/student/renew', [StudentController::class, 'renew'])->name('student.renew');
     Route::post('/student/renew', [StudentController::class, 'renewStore']);
     Route::get('/student/details-by-roll/{id}', [StudentController::class, 'getDetailsByRoll']);
+    Route::post('/student/update/comment', [StudentController::class, 'updateComment'])->name('student.comment.update');
 
     // Country status
     Route::post('/country/status/change', [CountryController::class, 'stausChng'])->name('countries.change.status');
@@ -62,5 +64,8 @@ Route::middleware('auth')->group(function () {
 
     // Invoice design
     Route::get('/invoice/{id}/details', [StudentController::class, 'viewInvoice'])->name('invoice.show');
+
+    // exam Payment
+    Route::get('/exam/payments', [ExamController::class, 'index'])->name('exam.payments');
 });
 Route::get('/get-email-content', [EmailTemplateController::class, 'getData'])->name('get.email.content');

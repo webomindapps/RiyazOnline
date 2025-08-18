@@ -14,9 +14,18 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('backend/css/style.css') }}">
     <link rel="icon" href="{{ asset('frontend/favicon.ico') }}" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+        .modal{
+            z-index: 999 !important;
+        }
+        .modal-backdrop {
+            z-index: 998 !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -47,6 +56,7 @@
         integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="{{ asset('backend/js/main.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
     @stack('scripts')
     <script>
         $(document).ready(function() {
@@ -68,6 +78,7 @@
                 });
             });
         });
+        Fancybox.bind('[data-fancybox="gallery"]', {});
     </script>
 </body>
 

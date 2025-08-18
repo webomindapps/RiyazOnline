@@ -97,20 +97,16 @@
         <div class="info">Please wait while we complete your transaction...</div>
     </div>
     @php
-        if ($type == 'new') {
-            $callback = route('payment.confirm', $student->id);
-        } else {
-            $callback = route('renewal.payment.confirm', $student->id);
-        }
+        $callback = route('exam.payment.confirm', $student->id);
     @endphp
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
         var options = {
             "key": "",
-            "amount": "{{ $student->grand_total }}",
+            "amount": "{{ $total }}",
             "currency": "INR",
             "name": "Riyaaz Online",
-            "description": "Riyaaz Online Course Fee",
+            "description": "Riyaaz Online Exam Fee",
             "image": "{{ asset('frontend/ifo.png') }}",
             "order_id": "{{ $order->id }}",
             "callback_url": "{{ $callback }}",
@@ -118,7 +114,7 @@
                 "color": "#3399cc"
             },
             "prefill": {
-                "name": "{{ $student->f_name . ' ' . $student->l_name }}",
+                "name": "{{ $student->name }}",
                 "email": "{{ $student->email }}",
                 "contact": "{{ $student->phone }}"
             },

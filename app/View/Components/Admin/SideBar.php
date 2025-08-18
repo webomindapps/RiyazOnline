@@ -70,6 +70,12 @@ class SideBar extends Component
             'isSubMenu' => false,
         ],
         [
+            'title' => 'Exam Registrations',
+            'icon' => 'bi bi-person-bounding-box',
+            'route' => 'admin.exam.payments',
+            'isSubMenu' => false,
+        ],
+        [
             'title' => 'Reports',
             'icon' => 'bi bi-card-list',
             'route' => 'admin.payments.report',

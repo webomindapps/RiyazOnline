@@ -43,6 +43,7 @@
                                     New Students
                                 </a>
                                 <a href="{{ route('existing.student') }}" class="btn nav-btn me-lg-2 mb-2 mb-lg-0">Existing Students</a>
+                                <a href="{{ route('exam.registration') }}" class="btn nav-btn me-lg-2 mb-2 mb-lg-0">Exam Registration</a>
                                 <a href="{{ route('missing.class') }}" class="btn nav-btn me-lg-2 mb-2 mb-lg-0">Missing Class Terms</a>
                             </div>
                         </div>
@@ -152,7 +153,7 @@
             });
         </script>
     @endif
-    @if (Session::has('renewed'))
+    {{-- @if (Session::has('renewed'))
         <script>
             $(document).ready(function() {
                 $('#renew').modal('show');
@@ -162,7 +163,7 @@
                     }, 8000);
             });
         </script>
-    @endif
+    @endif --}}
 </body>
 
 </html>

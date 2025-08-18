@@ -15,7 +15,12 @@ class CronjobController extends Controller
         $today = date("Y-m-d");
         $studentCourses = StudentCourseDetail::with('student')->whereHas('student', function ($q) {
             $q->where('status', 2);
-        })->where('due_date', $today)->get();
+        })->where('due_date', $today)
+            ->whereIn('id', function ($sub) {
+                $sub->selectRaw('MAX(id)')
+                    ->from('student_course_details')
+                    ->groupBy('student_id');
+            })->get();
         foreach ($studentCourses as $course) {
             $userId = 'riyaazobiz';
             $password = 'uebj8002UE';
@@ -53,7 +58,11 @@ class CronjobController extends Controller
         $third_date = date('Y-m-d', strtotime('+3 days', strtotime($today)));
         $studentCourses = StudentCourseDetail::with('student')->whereHas('student', function ($q) {
             $q->where('status', 2);
-        })->where('due_date', $third_date)->get();
+        })->where('due_date', $third_date)->whereIn('id', function ($sub) {
+            $sub->selectRaw('MAX(id)')
+                ->from('student_course_details')
+                ->groupBy('student_id');
+        })->get();
         foreach ($studentCourses as $course) {
             $userId = 'riyaazobiz';
             $password = 'uebj8002UE';

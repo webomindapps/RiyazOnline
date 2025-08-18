@@ -31,7 +31,12 @@ class PaymentReminderController extends Controller
         $today = date("Y-m-d");
         $studentCourses = $query->whereHas('student', function ($q) {
             $q->where('status', 2);
-        })->where('due_date', $today);
+        })->where('due_date', $today)
+            ->whereIn('id', function ($sub) {
+                $sub->selectRaw('MAX(id)')
+                    ->from('student_course_details')
+                    ->groupBy('student_id');
+            });
 
         $studentCourses = $paginate ? $query->paginate($paginate)->appends(request()->query()) : $query->paginate(10)->appends(request()->query());
         return view('admin.students.payments.today', compact('studentCourses'));
@@ -58,7 +63,12 @@ class PaymentReminderController extends Controller
         $fdate = date('Y-m-d', strtotime('+1 day', strtotime($today)));
         $studentCourses = $query->whereHas('student', function ($q) {
             $q->where('status', 2);
-        })->where('due_date', $fdate);
+        })->where('due_date', $fdate)
+            ->whereIn('id', function ($sub) {
+                $sub->selectRaw('MAX(id)')
+                    ->from('student_course_details')
+                    ->groupBy('student_id');
+            });
 
         $studentCourses = $paginate ? $query->paginate($paginate)->appends(request()->query()) : $query->paginate(10)->appends(request()->query());
         return view('admin.students.payments.tomorrow', compact('studentCourses'));
@@ -85,7 +95,12 @@ class PaymentReminderController extends Controller
         $fdate = date('Y-m-d', strtotime('+3 day', strtotime($today)));
         $studentCourses = $query->whereHas('student', function ($q) {
             $q->where('status', 2);
-        })->where('due_date', $fdate);
+        })->where('due_date', $fdate)
+            ->whereIn('id', function ($sub) {
+                $sub->selectRaw('MAX(id)')
+                    ->from('student_course_details')
+                    ->groupBy('student_id');
+            });
 
         $studentCourses = $paginate ? $query->paginate($paginate)->appends(request()->query()) : $query->paginate(10)->appends(request()->query());
         return view('admin.students.payments.threeday', compact('studentCourses'));
@@ -112,7 +127,11 @@ class PaymentReminderController extends Controller
         $fdate = date('Y-m-d', strtotime('+7 day', strtotime($today)));
         $studentCourses = $query->whereHas('student', function ($q) {
             $q->where('status', 2);
-        })->whereBetween('due_date', [$today, $fdate])->orderBy('due_date', 'ASC');
+        })->whereBetween('due_date', [$today, $fdate])->whereIn('id', function ($sub) {
+            $sub->selectRaw('MAX(id)')
+                ->from('student_course_details')
+                ->groupBy('student_id');
+        })->orderBy('due_date', 'ASC');
 
         $studentCourses = $paginate ? $query->paginate($paginate)->appends(request()->query()) : $query->paginate(10)->appends(request()->query());
         return view('admin.students.payments.sevenday', compact('studentCourses'));
@@ -143,6 +162,14 @@ class PaymentReminderController extends Controller
             $startDate = date("Y-m-d", strtotime($request->pick_date));
             $endDate = date("Y-m-d", strtotime($request->to_date));
             $query->whereBetween('paid_date', [$startDate, $endDate]);
+        }
+        if (!is_null($request->month)) {
+            $month = date('Y') . '-' . $request->month;
+            $firstDay = date("Y-m-01", strtotime($month));
+            $lastDay = date("Y-m-t", strtotime($month));
+            $query->whereBetween('paid_date', [$firstDay, $lastDay]);
+        } else {
+            $query->whereMonth('paid_date', date('m'))->whereYear('paid_date', date('Y'));
         }
 
         $reports = $query->orderBy('paid_date', 'DESC')->paginate(50);
