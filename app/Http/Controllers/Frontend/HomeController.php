@@ -37,13 +37,14 @@ class HomeController extends Controller
     }
     public function studentCreate(Request $request, $id)
     {
+        // regex:/^([1-9][0-9\s\-\+\(\)]*)$/
         $request->validate([
             'f_name' => 'required',
             'l_name' => 'required',
             'age' => 'required',
             'email' => 'required|email',
-            'phone' => 'required|regex:/^([1-9][0-9\s\-\+\(\)]*)$/|min:10',
-            'contact_no2' => 'required|regex:/^([1-9][0-9\s\-\+\(\)]*)$/|min:10|different:phone',
+            'phone' => 'required|min:10',
+            'contact_no2' => 'required|min:10|different:phone',
         ], ['contact_no2.required' => 'Alternate Phone number is required.', 'contact_no2.different' => 'Alternate Phone number should be differnt']);
         $tot_ses = 0;
         $course = Course::find($id);
@@ -51,8 +52,10 @@ class HomeController extends Controller
         $course_price = $course->new_student_fees;
         $conv_fee = 0;
         if ($request->country_id == "101") {
+            // $conv_fee = $course->conv_indian;
             $conv_fee = ($course_price * $course->conv_indian) / 100;
         } else {
+            // $conv_fee = $course->conv_foreigner;
             $conv_fee = ($course_price * $course->conv_foreigner) / 100;
         }
         $grand_total = $course_price + $conv_fee;
@@ -133,9 +136,9 @@ class HomeController extends Controller
             DB::rollback();
             dd($e);
         }
-        Mail::to($order->email)->send(new CompleteRegisterMail($studentcourse));
         $emails = AdminMail::where('status', 1)->pluck('email')->toArray();
-        $emails[] = $student->email;
+        $all_mails = array_merge($emails, [$order->email]);
+        Mail::to($all_mails)->send(new CompleteRegisterMail($studentcourse));
         Mail::to($emails)->send(new NewRegistration($student));
         return redirect()->route('home')->with('registered', 'Student registered successfully. Please check your email for further details.');
     }
@@ -234,6 +237,82 @@ class HomeController extends Controller
             return response()->json(['status' => false, 'message' => 'No student found.']);
         }
     }
+    // public function getCourseDetails(Request $request)
+    // {
+    //     $student = StudentDetail::where('id', $request->roll_no)->where('email', $request->email)->first();
+    //     if (is_null($student)) {
+    //         return redirect()->route('existing.student')->with('notfound', 'student not found with this roll no & email');
+    //     }
+    //     $studentcourse = StudentCourseDetail::with('student', 'course')->where('student_id', $request->roll_no)->orderBy('id', 'DESC')->first();
+    //     $date1 = new DateTime($studentcourse->date);
+    //     $date2 = new DateTime(); // defaults to "now"
+    //     $diff = date_diff($date1, $date2);
+    //     $day_diff = $diff->format("%R%a");
+    //     // $penalty = 0;
+    //     // if ($studentcourse->student->penalty_congestion != 1) {
+    //     //     if ($day_diff >= 1 && $day_diff <= 7) {
+    //     //         if ($studentcourse->student->penalty_amount == "") {
+    //     //             $penalty = 350;
+    //     //         } else {
+    //     //             $penalty = $studentcourse->student->penalty_amount;
+    //     //         }
+    //     //     } else if ($day_diff >= 8 && $day_diff <= 14) {
+    //     //         if ($studentcourse->student->penalty_amount == "") {
+    //     //             $penalty = 550;
+    //     //         } else {
+    //     //             $penalty = $studentcourse->student->penalty_amount;
+    //     //         }
+    //     //     } else if ($day_diff >= 15 && $day_diff <= 21) {
+    //     //         if ($studentcourse->student->penalty_amount == "") {
+    //     //             $penalty = 750;
+    //     //         } else {
+    //     //             $penalty = $studentcourse->student->penalty_amount;
+    //     //         }
+    //     //     } else if ($day_diff >= 22 && $day_diff <= 28) {
+    //     //         if ($studentcourse->student->penalty_amount == "") {
+    //     //             $penalty = 950;
+    //     //         } else {
+    //     //             $penalty = $studentcourse->student->penalty_amount;
+    //     //         }
+    //     //     } else if ($day_diff >= 29) {
+    //     //         if ($studentcourse->student->penalty_amount == "") {
+    //     //             $penalty = 1150;
+    //     //         } else {
+    //     //             $penalty = $studentcourse->student->penalty_amount;
+    //     //         }
+    //     //     }
+    //     // }
+    //     $paying_for = 1;
+    //     switch ($request->payment_type) {
+    //         case 0: // Guitar
+    //             $paying_for = 1;
+    //             break;
+    //         case 1: // Keyboard
+    //             $paying_for = 3;
+    //             break;
+    //         case 2: // Vocal
+    //             $paying_for = 6;
+    //             break;
+    //         default:
+    //             $paying_for = 1;
+    //     }
+    //     $due = $request->due ?? $studentcourse->date;
+    //     $subTotal = $studentcourse->course?->old_student_fees * $paying_for;
+    //     if ($student->country_id) {
+    //         if ($student->country_id == 101) {
+    //             $covinence = $studentcourse->course?->conv_indian;
+    //         } else {
+    //             $covinence = $studentcourse->course?->conv_foreigner;
+    //         }
+    //     } else {
+    //         $covinence = 100;
+    //     }
+    //     $convfee = $covinence * $paying_for; // Convenience fee is 100 per course
+    //     $total = $subTotal + $convfee;
+    //     $request->session()->put('total', $total);
+    //     $total = $request->session()->get('total');
+    //     return view('frontend.existing-student-step2', compact('studentcourse', 'total', 'convfee', 'subTotal', 'due', 'paying_for'));
+    // }
     public function getCourseDetails(Request $request)
     {
         $student = StudentDetail::where('id', $request->roll_no)->where('email', $request->email)->where('status', '!=', 3)->first();
@@ -241,6 +320,27 @@ class HomeController extends Controller
             return redirect()->route('existing.student')->with('notfound', 'student not found with this roll no & email');
         }
         $studentcourse = StudentCourseDetail::with('student', 'course')->where('student_id', $request->roll_no)->orderBy('id', 'DESC')->first();
+        $date1 = new DateTime($studentcourse->due_date);
+        $date2 = new DateTime(); // defaults to "now"
+        $diff = date_diff($date1, $date2);
+        $day_diff = $diff->format("%R%a");
+        $penalty = 0;
+        // if ($studentcourse->student->penalty_congestion != 1) {
+        if ($studentcourse->student->penalty_amount) {
+            $penalty = (float)$studentcourse->student->penalty_amount;
+        } else {
+            if ($day_diff >= 1 && $day_diff <= 7) {
+                $penalty = 200;
+            } else if ($day_diff >= 8 && $day_diff <= 14) {
+                $penalty = 400;
+            } else if ($day_diff >= 15 && $day_diff <= 21) {
+                $penalty = 600;
+            } else if ($day_diff >= 22 && $day_diff <= 28) {
+                $penalty = 800;
+            } else if ($day_diff >= 29) {
+                $penalty = 1000;
+            }
+        }
         $paying_for = 1;
         switch ($student->payment_type) {
             case 0: // Guitar
@@ -257,16 +357,26 @@ class HomeController extends Controller
         }
         $due = $request->due ?? $studentcourse->date;
         $subTotal = $studentcourse->course?->old_student_fees * $paying_for;
-        if ($student->country_id == 101) {
-            $covinence = ($studentcourse->course?->old_student_fees * $studentcourse->course?->conv_indian) / 100;
+        if ($student->country_id) {
+            if ($student->country_id == 101) {
+                // $covinence = $studentcourse->course?->conv_indian;
+                $convfee = ($subTotal * $studentcourse->course?->conv_indian) / 100;
+                $penalConv = ($penalty * $studentcourse->course?->conv_indian) / 100;
+            } else {
+                // $covinence = $studentcourse->course?->conv_foreigner;
+                $convfee = ($subTotal * $studentcourse->course?->conv_foreigner) / 100;
+                $penalConv = ($penalty * $studentcourse->course?->conv_foreigner) / 100;
+            }
         } else {
-            $covinence = ($studentcourse->course?->old_student_fees * $studentcourse->course?->conv_foreigner) / 100;
+            $convfee = 100;
         }
-        $convfee = $covinence * $paying_for; // Convenience fee is 100 per course
-        $total = $subTotal + $convfee;
+        
+        $covinence = $convfee + $penalConv; // Convenience fee is 100 per course
+        $total = $subTotal + $convfee + $penalty;
         $request->session()->put('total', $total);
         $total = $request->session()->get('total');
-        return view('frontend.existing-student-step2', compact('studentcourse', 'total', 'convfee', 'subTotal', 'due', 'paying_for', 'student'));
+        // return view('frontend.existing-student-step2', compact('studentcourse', 'total', 'convfee','penalty', 'subTotal', 'due', 'paying_for', 'student'));
+        return view('frontend.existing-student-step2', compact('studentcourse', 'total','covinence', 'convfee', 'penalty','penalConv', 'subTotal', 'due', 'paying_for', 'student'));
     }
     public function completeRegistrationView($id)
     {
@@ -318,9 +428,11 @@ class HomeController extends Controller
             DB::rollback();
             dd($e);
         }
-        $emails = AdminMail::where('status', 1)->pluck('email')->toArray();
-        $emails[] = $student->email;
-        Mail::to($emails)->send(new CompletedProfile($student));
+        if ($student->status != 1) {
+            $emails=AdminMail::where('status',1)->pluck('email')->toArray();
+            $emails[] = $student->email;
+            Mail::to($emails)->send(new CompletedProfile($student));
+        }
         return redirect()->route('home')->with('complete', 'Student registration completed successfully.');
     }
 
@@ -348,7 +460,7 @@ class HomeController extends Controller
         $password = 'uebj8002UE';
         $senderId = 'RYZONL';
         $phoneNumber = '9668122651';
-        $message = 'Dear Dhruba, Greetings from RiyaazOnline music classes. Kindly note, that your fees due date is on 15-06-2025 of every month. Kindly make the payment on or before the due date to continue your lessons smoothly. Please ignore if already paid. Thank you';
+        $message = 'Dear Dhruba, Greetings from RiyaazOnline music classes. Kindly note, that your fees due date is on 11-10-2025 of every month. Kindly make the payment on or before the due date to continue your lessons smoothly. Please ignore if already paid. Thank you';
         $entityId = '1701172914234060146';
         $templateId = '1707173821059462047';
 
@@ -379,11 +491,11 @@ class HomeController extends Controller
         $student = StudentDetail::where('email', $request->email)->where('id', $request->roll_no)->where('status', '!=', 3)->first();
         if ($student) {
             if ($student->country_id == 101) {
-                $convfee = (1500 * 3) / 100;
+                $convfee = (1600 * 3) / 100;
             } else {
-                $convfee = (1500 * 4) / 100;
+                $convfee = (1600 * 4) / 100;
             }
-            $exam_fee = 1500; // Convenience fee is 100 per course
+            $exam_fee = 1600; // Convenience fee is 100 per course
             $total = $exam_fee + $convfee;
             return view('frontend.exam-prices', compact('student', 'exam_fee', 'convfee', 'total'));
         } else {

@@ -165,13 +165,13 @@
             </div>
             <div class="col-lg-4">
                 <div class="panel">
-                    <a href="{{ route('admin.courses.index') }}">
+                    <a href="{{ route('admin.all.students') }}">
                         <img src="{{ asset('backend/circle.svg') }}" alt="">
                         <div class="panel-body">
                             <div class="heading-elements">
                             </div>
-                            <h3 class="no-margin">{{ $courseCount }}</h3>
-                            existingStudentCount
+                            <h3 class="no-margin">{{ $existingStudentCount }}</h3>
+                            Existing Students
                             <div class="text-muted text-size-small"> <br></div>
                         </div>
                     </a>
@@ -199,7 +199,7 @@
             </div>
             <div class="col-lg-4">
                 <div class="panel">
-                    <a href="{{ route('admin.courses.index') }}">
+                    <a href="{{ route('admin.payments.today') }}">
                         <img src="{{ asset('backend/circle.svg') }}" alt="">
                         <div class="panel-body">
                             <div class="heading-elements">
@@ -281,7 +281,7 @@
             </div>
             <div class="col-lg-4">
                 <div class="panel">
-                    <a href="{{ route('admin.courses.index') }}">
+                    <a href="{{ route('admin.payments.threeday') }}">
                         <img src="{{ asset('backend/circle.svg') }}" alt="">
                         <div class="panel-body">
                             <div class="heading-elements">
@@ -315,7 +315,7 @@
             </div>
             <div class="col-lg-4">
                 <div class="panel">
-                    <a href="{{ route('admin.courses.index') }}">
+                    <a href="{{ route('admin.payments.sevenday') }}">
                         <img src="{{ asset('backend/circle.svg') }}" alt="">
                         <div class="panel-body">
                             <div class="heading-elements">

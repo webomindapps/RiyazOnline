@@ -15,9 +15,6 @@
     <link rel="stylesheet" href="{{ asset('backend/css/style.css') }}">
     <link rel="icon" href="{{ asset('frontend/favicon.ico') }}" type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />
-
-    <!-- Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         .modal{
             z-index: 999 !important;
@@ -26,6 +23,9 @@
             z-index: 998 !important;
         }
     </style>
+
+    <!-- Scripts -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
 <body>

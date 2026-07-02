@@ -27,10 +27,10 @@ class RenewalReminder extends Command
      */
     public function handle()
     {
-        Log::info('Renewal reminder command started.');
         $cronjobControl = new CronjobController();
         $cronjobControl->todayDues();
         $cronjobControl->threeDayReminder();
         $cronjobControl->sevenDayReminder();
+        Log::info('Renewal reminder command started.');
     }
 }

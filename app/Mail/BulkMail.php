@@ -42,12 +42,18 @@ class BulkMail extends Mailable
      */
     public function content(): Content
     {
+        $mailContent = str_replace(
+            '@name',
+            $this->student->f_name,
+            $this->content
+        );
         return new Content(
             view: 'mail.bulk-mail',
             with: [
-                'roll' => $this->student->id,
-                'email' => $this->student->email,
-                'link' => route('complete.registration', $this->student->id),
+                'mcontent' => $mailContent,
+                // 'roll' => $this->student->id,
+                // 'email' => $this->student->email,
+                // 'link' => route('complete.registration', $this->student->id),
             ],
         );
     }
@@ -60,9 +66,9 @@ class BulkMail extends Mailable
     public function attachments(): array
     {
         return [
-            Attachment::fromPath(public_path('frontend/Steps-to-make-payment.docx'))
-                ->as('Payment_Guide.docx') // Optional: rename the file in the email
-                ->withMime('application/docx')
+            // Attachment::fromPath(public_path('frontend/Steps-to-make-payment.docx'))
+            //     ->as('Payment_Guide.docx') // Optional: rename the file in the email
+            //     ->withMime('application/docx')
         ];
     }
 }

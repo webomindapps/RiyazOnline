@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\CompleteRegisterMail;
 use App\Mail\ExamRegistrationMail;
+use App\Mail\NewRegistration;
 use App\Mail\RenewMail;
 use App\Models\AdminMail;
+use App\Models\Course;
 use App\Models\ExamRegistration;
 use App\Models\PaymentDetail;
 use App\Models\StudentCourseDetail;
@@ -14,6 +17,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Razorpay\Api\Api;
 
@@ -30,13 +34,22 @@ class PaymentController extends Controller
             'amount' => (float) $student->grand_total * 100,
             'currency' => 'INR',
             'notes' => [
+                'type' => 'new',
                 'student_id'   => $request->temp_id,
                 'paying_for'    => 1,
                 'paying_for_months' => 1 . ' months',
             ]
         ]);
         $type = "new";
-
+        PaymentDetail::create([
+            'student_id' => $request->temp_id,
+            'type' => 'new',
+            'email' => $student->email,
+            'razorpay_order_id' => $order['id'],
+            'payment_status' => 'created',
+            'amount' => $student->grand_total,
+            'paying_for' => '1',
+        ]);
         return view('frontend.payment', compact('student', 'order', 'type'));
     }
     public function paymentConfirm(Request $request, $id)
@@ -45,18 +58,18 @@ class PaymentController extends Controller
         $secret = env('RAZORPAY_SECRET_KEY');
         $api = new Api($key_id, $secret);
         $response = $api->payment->fetch($request->razorpay_payment_id);
-        PaymentDetail::create([
-            'student_id' => $id,
-            'type' => 'new',
-            'email' => $response->email,
-            'razorpay_payment_id' => $request->razorpay_payment_id,
-            'razorpay_order_id' => $request->razorpay_order_id,
-            'razorpay_signature' => $request->razorpay_signature,
-            'payment_status' => $response->status,
-            'amount' => $response->amount / 100,
-            'paying_for' => $response->notes?->paying_for,
-        ]);
+        $payment = PaymentDetail::where('razorpay_order_id', $request->razorpay_order_id)->first();
         if ($response->status == "captured") {
+            if($payment->payment_status == 'captured'){
+                return redirect()->route('home')->with('registered', 'Student registered successfully. Please check your email for further details.');
+            }
+            $payment->update([
+                'razorpay_payment_id' => $request->razorpay_payment_id,
+                'razorpay_signature' => $request->razorpay_signature,
+                'payment_status' => $response->status,
+                'amount' => $response->amount / 100,
+                'paying_for' => $response->notes?->paying_for,
+            ]);
             return redirect()->route('student.store', $id);
         } else {
             return redirect('/')->with('error', 'Payment failed');
@@ -68,18 +81,32 @@ class PaymentController extends Controller
         $key_id = env('RAZORPAY_KEY_ID');
         $secret = env('RAZORPAY_SECRET_KEY');
         $api = new Api($key_id, $secret);
+        $total = (float) $request->total;
+        $amountInPaise = (int) round($total * 100);
+        // dd((float) $total * 100,$total);
+        // if($request->student_id==95){
+        //     $total=1;
+        // }
         $order = $api->order->create([
             'receipt' => $request->student_id,
-            'amount' => (float) $request->total * 100,
+            'amount' => $amountInPaise,
             'currency' => 'INR',
             'notes' => [
+                'type' => 'existing',
                 'student_id'   => $request->student_id,
                 'paying_for'    => $request->paying_for,
                 'paying_for_months' => $request->paying_for . ' months',
                 'amount' => $request->amount,
                 'conv_fee' => $request->conv_fee,
+                'penalty' => $request->penalty,
                 'total' => $request->total,
             ]
+        ]);
+        PaymentDetail::create([
+            'student_id' => $request->student_id,
+            'type' => 'existing',
+            'razorpay_order_id' => $order['id'],
+            'payment_status' => 'created',
         ]);
         $type = "existing";
         $student = StudentDetail::find($request->student_id);
@@ -92,18 +119,21 @@ class PaymentController extends Controller
         $api = new Api($key_id, $secret);
         $response = $api->payment->fetch($request->razorpay_payment_id);
         $amount = $response->amount / 100;
-        PaymentDetail::create([
-            'student_id' => $id,
-            'type' => 'existing',
-            'email' => $response->email,
-            'razorpay_payment_id' => $request->razorpay_payment_id,
-            'razorpay_order_id' => $request->razorpay_order_id,
-            'razorpay_signature' => $request->razorpay_signature,
-            'payment_status' => $response->status,
-            'amount' => $amount,
-            'paying_for' => $response->notes?->paying_for,
-        ]);
+        $payment = PaymentDetail::where('razorpay_order_id', $request->razorpay_order_id)->first();
         if ($response->status == "captured") {
+            if($payment->payment_status == 'captured'){
+                return redirect()->route('home')->with('renewed', 'Student course renewed successfully. Please check your email for further details.');
+            }
+            $payment->update([
+                'student_id' => $id,
+                'type' => 'existing',
+                'email' => $response->email,
+                'razorpay_payment_id' => $request->razorpay_payment_id,
+                'razorpay_signature' => $request->razorpay_signature,
+                'payment_status' => $response->status,
+                'amount' => $amount,
+                'paying_for' => $response->notes?->paying_for,
+            ]);
             DB::beginTransaction();
             try {
                 $student = StudentDetail::find($id);
@@ -124,16 +154,17 @@ class PaymentController extends Controller
                     'paid_date' => date("Y-m-d"),
                     'teacher' => "1",
                     'manual' => "2",
-                    'penalty_amount' => 0,
+                    'penalty_amount' => $response->notes?->penalty,
                     'pdf_link' => 1,
                     'method' => 1,
                 ]);
+                $student->update(['penalty_amount'=>0]);
                 DB::commit();
             } catch (Exception $e) {
                 DB::rollback();
                 dd($e);
             }
-            $emails = AdminMail::where('status', 1)->pluck('email')->toArray();
+            $emails=AdminMail::where('status',1)->pluck('email')->toArray();
             $emails[] = $student->email;
             Mail::to($emails)->send(new RenewMail($studentcourse));
             return redirect()->route('home')->with('renewed', 'Student course renewed successfully. Please check your email for further details.');
@@ -228,9 +259,113 @@ class PaymentController extends Controller
             $emails = AdminMail::where('status', 1)->pluck('email')->toArray();
             $emails[] = $student->email;
             Mail::to($emails)->send(new ExamRegistrationMail($student));
-            return redirect()->route('home')->with('renewed', 'Registration Successfull Please check your mail for confirmation');
+            return redirect()->route('home')->with('examfee', 'Registration Successfull Please check your mail for confirmation');
         } else {
             return redirect('/')->with('error', 'Payment failed');
         }
+    }
+    public function webhook(Request $request)
+    {
+        Log::info('Razorpay Webhook', [
+            'payload' => $request->all(),
+        ]);
+        $data = $request->input();
+        $orderType = $data['payload']['payment']['entity']['notes']['type'];
+        $id = $data['payload']['payment']['entity']['notes']['student_id'];
+        $payment = PaymentDetail::where('razorpay_order_id', $data['payload']['payment']['entity']['order_id'])->first();
+        if($payment){
+            if ($payment->payment_status != 'captured') {
+                $payment->update([
+                    'payment_status' => $data['payload']['payment']['entity']['status'],
+                    'amount' => $data['payload']['payment']['entity']['amount'] / 100,
+                    'paying_for' => $data['payload']['payment']['entity']['notes']['paying_for'],
+                ]);
+                if ($orderType == 'new') {
+                    $order = TempStudent::find($id);
+                    if(!$order){
+                        return response()->json(['status' => 'ok'], 200);
+                    }
+                    $course = Course::find($order->course_id);
+                    DB::beginTransaction();
+                    try {
+                        $student = StudentDetail::create([
+                            "f_name" => $order->f_name,
+                            "l_name" => $order->l_name,
+                            "email" => $order->email,
+                            "age" => $order->age,
+                            "phone" => $order->phone,
+                            "phone_2" => $order->phone_two,
+                            "country_id" => $order->country_id,
+                            "state_id" => $order->state_id,
+                            "city" => $order->city,
+                            'status' => 1,
+                            'date' => date("Y-m-d"),
+                            'latest_paid_date' => date("Y-m-d"),
+                        ]);
+                        $invoice_no = $this->generateInvoiceNo();
+                        $studentcourse = StudentCourseDetail::create([
+                            'student_id' => $student->id,
+                            'course_id' => $course->id,
+                            'course_name' => $course->course_name,
+                            "invoice_no" => $invoice_no[0],
+                            "financial_year" => $invoice_no[1],
+                            'type' => 1,
+                            'convenience_fees' => $order->convenience_fees,
+                            'gst_amount' => $order->gst_amount,
+                            'grand_total' => $order->grand_total,
+                            'amount' => $order->total_fees,
+                            'due_date' => Carbon::parse($order->date)->addMonth()->format('Y-m-d'),
+                            'paid_date' => date("Y-m-d"),
+                            'teacher' => "1",
+                            'manual' => "1",
+                            'penalty_amount' => 0,
+                            'pdf_link' => 1,
+                            'method' => 1,
+                        ]);
+                        DB::commit();
+                    } catch (Exception $e) {
+                        DB::rollback();
+                        dd($e);
+                    }
+                    Mail::to($order->email)->send(new CompleteRegisterMail($studentcourse));
+                    $emails = AdminMail::where('status', 1)->pluck('email')->toArray();
+                    $emails[] = $student->email;
+                    Mail::to($emails)->send(new NewRegistration($student));
+                } else if ($orderType == 'existing') {
+                    try {
+                        $student = StudentDetail::find($id);
+                        $course = $student->studentcourse?->course;
+                        $invoice_no = $this->generateInvoiceNo();
+                        $studentcourse = StudentCourseDetail::create([
+                            'student_id' => $id,
+                            'course_id' => $course->id,
+                            'course_name' => $course->course_name,
+                            "invoice_no" => $invoice_no[0],
+                            "financial_year" => $invoice_no[1],
+                            'type' => $data['payload']['payment']['entity']['notes']['paying_for'],
+                            'convenience_fees' => $data['payload']['payment']['entity']['notes']['conv_fee'],
+                            'gst_amount' => 0,
+                            'grand_total' => $data['payload']['payment']['entity']['notes']['total'],
+                            'amount' => $data['payload']['payment']['entity']['notes']['amount'],
+                            'due_date' => Carbon::parse($student->studentcourse?->due_date)->addMonths((int) ($data['payload']['payment']['entity']['notes']['paying_for'] ?? 1))->format('Y-m-d'),
+                            'paid_date' => date("Y-m-d"),
+                            'teacher' => "1",
+                            'manual' => "2",
+                            'penalty_amount' => 0,
+                            'pdf_link' => 1,
+                            'method' => 1,
+                        ]);
+                        DB::commit();
+                    } catch (Exception $e) {
+                        DB::rollback();
+                        dd($e);
+                    }
+                    $emails = AdminMail::where('status', 1)->pluck('email')->toArray();
+                    $emails[] = $student->email;
+                    Mail::to($emails)->send(new RenewMail($studentcourse));
+                }
+            }
+        }
+        return response()->json(['status' => 'ok'], 200);
     }
 }

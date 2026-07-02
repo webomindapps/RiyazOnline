@@ -1,5 +1,5 @@
-{{-- <p class="">"{{ $content }}"</p> --}}
-<p>Dear Student,</p>
+{!! $mcontent !!}
+{{-- <p>Dear Student,</p>
 
 <p>We are pleased to share your details below:</p>
 
@@ -15,4 +15,4 @@
 <p>Please find the attached guide for the payment process.</p>
 
 <p>Thank you,<br>
-    Riyaaz Online</p>
+    Riyaaz Online</p> --}}

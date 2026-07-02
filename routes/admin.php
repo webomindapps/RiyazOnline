@@ -58,6 +58,7 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/student/status/change', [StudentController::class, 'changeStatus'])->name('student.status.change');
     Route::post('/student/joining/date', [StudentController::class, 'addJoinDate'])->name('student.joinDt.change');
+    Route::post('/student/penalty/change', [StudentController::class, 'changePenalty'])->name('student.penalty.change');
 
     // Attrition Students
     Route::get('/disabled/students', [StudentController::class, 'disabledStudents'])->name('students.disabled');

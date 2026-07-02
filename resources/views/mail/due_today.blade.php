@@ -3,6 +3,6 @@
     make
     the payment on or before the due date to continue your lessons smoothly. Please ignore if already paid. Thank you.
 </p>
-<p><a href="https://surl.li/cuctcx">Click</a></p>
+<p><a href="https://www.riyaazonline.com/classes-registration/public/existing-student">Click</a></p>
 <p>Regards,<br>
     RiyaazOnline Team</p>

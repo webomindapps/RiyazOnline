@@ -9,7 +9,7 @@
                 ['label' => 'Email', 'column' => 'emsil', 'sort' => false],
                 ['label' => 'Phone', 'column' => 'priority', 'sort' => false],
                 ['label' => 'Exam fees', 'column' => 'exam_fee', 'sort' => false],
-                ['label' => 'Convinence fee', 'column' => 'convience_fee', 'sort' => false],
+                ['label' => 'Convenience fees', 'column' => 'convience_fee', 'sort' => false],
                 ['label' => 'Total Amount', 'column' => 'total', 'sort' => false],
                 ['label' => 'Paid Date', 'column' => 'payment_date', 'sort' => false],
                 // ['label' => 'Actions', 'column' => 'action', 'sort' => false],

@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Mail\DueToday;
+use App\Models\AdminMail;
 use App\Models\StudentCourseDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class CronjobController extends Controller
@@ -15,8 +17,7 @@ class CronjobController extends Controller
         $today = date("Y-m-d");
         $studentCourses = StudentCourseDetail::with('student')->whereHas('student', function ($q) {
             $q->where('status', 2);
-        })->where('due_date', $today)
-            ->whereIn('id', function ($sub) {
+        })->where('due_date', $today)->whereIn('id', function ($sub) {
                 $sub->selectRaw('MAX(id)')
                     ->from('student_course_details')
                     ->groupBy('student_id');
@@ -29,8 +30,10 @@ class CronjobController extends Controller
             $message = 'Dear ' . $course->student->f_name . ', Greetings from RiyaazOnline music classes. Kindly note, that your fees due date is on ' . date('d-m-Y') . ' of every month. Kindly make the payment on or before the due date to continue your lessons smoothly. Please ignore if already paid. Thank you';
             $entityId = '1701172914234060146';
             $templateId = '1707173821059462047';
-            $email = $course->student?->email;
-            Mail::to($email)->send(new DueToday($course));
+            // $email = $course->student?->email;
+            $emails = AdminMail::where('status', 1)->pluck('email')->toArray();
+            $emails[] = $course->student?->email;
+            Mail::to($emails)->send(new DueToday($course));
             $this->sendSingleSms($userId, $password, $senderId, $phoneNumber, $message, $entityId, $templateId);
         }
     }
@@ -49,6 +52,9 @@ class CronjobController extends Controller
             'EntityID'   => $entityId,
             'TemplateID' => $templateId,
         ]);
+        Log::info('SMS Status', [
+            'response1' => $response,
+        ]);
 
         return $response->body();
     }
@@ -59,10 +65,10 @@ class CronjobController extends Controller
         $studentCourses = StudentCourseDetail::with('student')->whereHas('student', function ($q) {
             $q->where('status', 2);
         })->where('due_date', $third_date)->whereIn('id', function ($sub) {
-            $sub->selectRaw('MAX(id)')
-                ->from('student_course_details')
-                ->groupBy('student_id');
-        })->get();
+                $sub->selectRaw('MAX(id)')
+                    ->from('student_course_details')
+                    ->groupBy('student_id');
+            })->get();
         foreach ($studentCourses as $course) {
             $userId = 'riyaazobiz';
             $password = 'uebj8002UE';
@@ -71,8 +77,10 @@ class CronjobController extends Controller
             $message = 'Dear ' . $course->student->f_name . ', Greetings from RiyaazOnline music classes. Kindly note, that your fees due date is on ' . date('d-m-Y', strtotime($third_date)) . ' of every month. Kindly make the payment on or before the due date to continue your lessons smoothly. Please ignore if already paid. Thank you';
             $entityId = '1701172914234060146';
             $templateId = '1707173821059462047';
-            $email = $course->student?->email;
-            Mail::to($email)->send(new DueToday($course));
+            // $email = $course->student?->email;
+            $emails = AdminMail::where('status', 1)->pluck('email')->toArray();
+            $emails[] = $course->student?->email;
+            Mail::to($emails)->send(new DueToday($course));
             $this->sendSingleSms($userId, $password, $senderId, $phoneNumber, $message, $entityId, $templateId);
         }
     }
@@ -82,7 +90,11 @@ class CronjobController extends Controller
         $seven_date = date('Y-m-d', strtotime('+7 days', strtotime($today)));
         $studentCourses = StudentCourseDetail::with('student')->whereHas('student', function ($q) {
             $q->where('status', 2);
-        })->where('due_date', $seven_date)->get();
+        })->where('due_date', $seven_date)->whereIn('id', function ($sub) {
+                $sub->selectRaw('MAX(id)')
+                    ->from('student_course_details')
+                    ->groupBy('student_id');
+            })->get();
         foreach ($studentCourses as $course) {
             $userId = 'riyaazobiz';
             $password = 'uebj8002UE';
@@ -91,8 +103,10 @@ class CronjobController extends Controller
             $message = 'Dear ' . $course->student->f_name . ', Greetings from RiyaazOnline music classes. Kindly note, that your fees due date is on ' . date('d-m-Y', strtotime($seven_date)) . ' of every month. Kindly make the payment on or before the due date to continue your lessons smoothly. Please ignore if already paid. Thank you';
             $entityId = '1701172914234060146';
             $templateId = '1707173821059462047';
-            $email = $course->student?->email;
-            Mail::to($email)->send(new DueToday($course));
+            // $email = $course->student?->email;
+            $emails = AdminMail::where('status', 1)->pluck('email')->toArray();
+            $emails[] = $course->student?->email;
+            Mail::to($emails)->send(new DueToday($course));
             $this->sendSingleSms($userId, $password, $senderId, $phoneNumber, $message, $entityId, $templateId);
         }
     }

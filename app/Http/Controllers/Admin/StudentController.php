@@ -85,7 +85,7 @@ class StudentController extends Controller
             $gst_amount = 0;
             $grand_total = $course->new_student_fees;
             $fees = $course->new_student_fees;
-            StudentCourseDetail::create([
+            $studentcourse=StudentCourseDetail::create([
                 'student_id' => $student->id,
                 'course_id' => $course->id,
                 'course_name' => $course->course_name,
@@ -105,6 +105,9 @@ class StudentController extends Controller
                 'method' => $data['payment_type'],
             ]);
             DB::commit();
+            $emails=AdminMail::where('status',1)->pluck('email')->toArray();
+            $emails[] = $student->email;
+            Mail::to($emails)->send(new RenewMail($studentcourse));
         } catch (Exception $e) {
             DB::rollback();
             dd($e);
@@ -155,14 +158,14 @@ class StudentController extends Controller
     public function edit($id)
     {
         $student = $this->student->find($id);
-        $courses = Course::where('status', 1)->get();
+        $courses = Course::all();
         $countries = Country::all();
         $state = State::where('id', $student->state_id)->first();
         return view('admin.students.edit', compact('student', 'courses', 'countries', 'state'));
     }
-    public function update(StudentRequest $request, $id)
+    public function update(Request $request, $id)
     {
-        $data = $request->validated();
+        $data = $request->all();
         $student = $this->student->find($id);
         if ($request->file('photo')) {
             $path = $request->file('photo')->store('photos', 'public');
@@ -210,7 +213,7 @@ class StudentController extends Controller
 
     public function disabledStudents()
     {
-        $searchColumns = ['id', 'name', 'email', 'status'];
+        $searchColumns = ['id', 'f_name', 'l_name', 'email', 'status'];
         $search = request()->search;
         $order = request()->orderedColumn;
         $orderBy = request()->orderBy;
@@ -222,6 +225,7 @@ class StudentController extends Controller
         if ($search != '')
             $query->where(function ($q) use ($search, $searchColumns) {
                 foreach ($searchColumns as $key => $value) ($key == 0) ? $q->where($value, 'LIKE', '%' . $search . '%') : $q->orWhere($value, 'LIKE', '%' . $search . '%');
+                $q->orWhereRaw("CONCAT(f_name, ' ', l_name) LIKE ?", ["%{$search}%"]);
             });
 
         // sorting
@@ -351,6 +355,15 @@ class StudentController extends Controller
         }
         return redirect()->back()->withErrors(['error' => 'No file uploaded']);
     }
+    // public function bulkMail(Request $request)
+    // {
+    //     $studentMails = $this->student->whereIn('id', $request->student)->pluck('email');
+    //     $template = EmailTemplate::find($request->template_id);
+    //     $content = $request->content;
+    //     // dd($studentMails,$request->all());
+    //     Mail::to($studentMails)->send(new BulkMail($content, $template->title));
+    //     return ['success' => 'Mail sent successfully'];
+    // }
     public function bulkMail(Request $request)
     {
         // $studentMails = $this->student->whereIn('id', $request->student)->pluck('email');
@@ -358,9 +371,9 @@ class StudentController extends Controller
         $template = EmailTemplate::find($request->template_id);
         $content = $request->content;
         // dd($studentMails,$request->all());
-        $emails = AdminMail::where('status', 1)->pluck('email')->toArray();
+        $emails=AdminMail::where('status',1)->pluck('email')->toArray();
         foreach ($studentMails as $student) {
-            Mail::to($student->email)->cc($emails)->send(new BulkMail($content, $template->title, $student));
+            Mail::to($student->email)->cc($emails)->send(new BulkMail($content, $template->title,$student));
         }
         // Mail::to($studentMails)->send(new BulkMail($content, $template->title,$student));
         return ['success' => 'Mail sent successfully'];
@@ -406,6 +419,15 @@ class StudentController extends Controller
             ->pluck('full_name');
         return response()->json($filterResult);
     }
+    public function disableAutocompleteSearch(Request $request)
+    {
+        $query = $request->get('query');
+        $filterResult = StudentDetail::selectRaw("CONCAT(f_name, ' ', l_name) AS full_name")
+            ->whereRaw("CONCAT(f_name, ' ', l_name) LIKE ?", ["%{$query}%"])
+            ->where('status',3)
+            ->pluck('full_name');
+        return response()->json($filterResult);
+    }
 
     public function renew()
     {
@@ -448,6 +470,19 @@ class StudentController extends Controller
         if (!$course) {
             return redirect()->back()->withErrors(['error' => 'Course not found']);
         }
+        switch ($request->payment_type) {
+            case 0: // Guitar
+                $paying_for = 1;
+                break;
+            case 1: // Keyboard
+                $paying_for = 3;
+                break;
+            case 2: // Vocal
+                $paying_for = 6;
+                break;
+            default:
+                $paying_for = 1;
+        }
 
         DB::beginTransaction();
         try {
@@ -463,7 +498,7 @@ class StudentController extends Controller
                 'gst_amount' => 0, // Assuming no GST for renewals
                 'grand_total' => $data['grand_total'],
                 'amount' => $data['amount'],
-                'due_date' => Carbon::parse($data['due_date'])->addMonths(1)->format('Y-m-d'),
+                'due_date' => Carbon::parse($data['due_date'])->addMonths($paying_for)->format('Y-m-d'),
                 'paid_date' => Carbon::parse($data['paid_date'])->format('Y-m-d'),
                 'teacher' => "1",
                 'manual' => "1",
@@ -495,5 +530,13 @@ class StudentController extends Controller
         $student->update(['comment' => $comment]);
 
         return response()->json(['success' => 'Comment updated successfully']);
+    }
+    public function changePenalty(Request $request)
+    {
+        $student = $this->student->find($request->id);
+        $student->update([
+            'penalty_amount' => $request->penalty,
+        ]);
+        return ['status' => 'success'];
     }
 }

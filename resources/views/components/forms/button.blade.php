@@ -1,3 +1,3 @@
-<button {{ $attributes }}>
-    {{ $attributes->get('label', 'Submit') }}
-</button>
+<button {{ $attributes }}>
+    {{ $attributes->get('label', 'Submit') }}
+</button>

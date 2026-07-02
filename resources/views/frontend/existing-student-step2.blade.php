@@ -58,6 +58,12 @@
                 @if ($errors->has('paying_for'))
                     <span style="font-size: 10px; color:red;">{{ $errors->first('paying_for') }}</span>
                 @endif
+                <blink class="my-element gradient-button" style="display: flex;align-items:end;">
+                    <h6 class="mb-0" style="margin-right:12px;">Due Date:</h6>
+                    <h6 class="mb-0" id="due_date">
+                        {{ $studentcourse->due_date ? \Carbon\Carbon::parse($studentcourse->due_date)->format('d-F-Y') : '' }}
+                    </h6>
+                </blink>
             </div>
             <div class="col-md-5 left-side">
                 <div class="order-summary">
@@ -84,8 +90,16 @@
                             <h5>Convenience Fees</h5>
                         </div>
                         <div class="col-4 text-end">
-                            <p class="fw-semibold">₹ <span class="conv_fee">{{ $convfee }}</span></p>
+                            <p class="fw-semibold">₹ <span class="conv_fee">{{ $covinence }}</span></p>
                         </div>
+                        @if($penalty)
+                            <div class="col-8">
+                                <h5>Penalty</h5>
+                            </div>
+                            <div class="col-4 text-end">
+                                <p class="fw-semibold">₹ <span class="penalty">{{ $penalty }}</span></p>
+                            </div>
+                        @endif
                     </div>
                     <div class="row total">
                         <div class="col-8">
@@ -95,10 +109,10 @@
                             <h4>₹ <span class="all_total">{{ $total }}</span></h4>
                         </div>
                     </div>
-                    <div class="terms-checkbox">
-                        <div class="check-layer">
+                    <div class="terms-checkbox" style="margin-bottom: 15px;">
+                        <div class="check-layer" onclick="validateCheckbox()">
                             <input type="checkbox" id="terms" required
-                                oninvalid="this.setCustomValidity('Please go through the Terms and Conditions')" />
+                                oninvalid="this.setCustomValidity('Please scroll through and read the entire terms and conditions.')" />
                         </div>
                         <label>
                             I Agree to the
@@ -112,7 +126,8 @@
                     <input type="hidden" name="course_type" value="{{ $studentcourse->type }}" />
                     <input type="hidden" name="course_id" value="{{ $studentcourse->course_id }}" />
                     <input type="hidden" name="amount" id="amount" value="{{ $subTotal }}">
-                    <input type="hidden" name="conv_fee" value="{{ $convfee }}" id="conv" />
+                    <input type="hidden" name="conv_fee" value="{{ $covinence }}" id="conv" />
+                    <input type="hidden" name="penalty" value="{{ $penalty }}" id="penalty" />
                     <input type="hidden" name="total" id="total" value="{{ $total }}">
                     {{-- <input type="hidden" name="penalty" value="{{ $penalty }}" /> --}}
                     <div class="action-buttons">
@@ -146,15 +161,50 @@
                                     the
                                     payment gateway for processing credit card/debit card/net-banking/e-wallet payments.
                                 </p>
+                                <p class="mb-1"><strong>Registration fees</strong></p>
+                                <p class="text-justify">A non-refundable one-time registration fee of Rs 1,000/- is applicable for new students, which covers online platform access, student account setup, course materials, technical support setup, enrollment processing, and guarantees your reserved position in our structured online music curriculum.</p>
                                 <p class="mb-1"><strong>Due Date of Monthly fee Payment</strong></p>
                                 <p class="text-justify">All students are required to pay the monthly fees on or before
                                     the due date every month. Students’ first date of joining the class is considered as
                                     the Due Date for the Monthly Fee payment.</p>
+                                <p class="mb-1"><strong>Late fees & Penalty</strong></p>
+                                <p class="text-justify">payments made after the due date will attract late fees, which will continue to increase on a weekly basis, as this is a system-generated process and manual adjustments are not possible.</p>
+                                <p class="text-justify">Late fees are not meant to burden anyone, but to encourage timely payments, manage administrative efforts, and ensure fairness to students who pay on time.</p>
+                                <table style="width: 100%; border:1px solid grey; border-collapse: collapse;">
+                                    <thead>
+                                        <tr>
+                                            <th style="border:1px solid grey;padding:5px;">Days</th>
+                                            <th style="border:1px solid grey;padding:5px;">Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td style="border:1px solid grey;padding:5px;">1-7 Days</td>
+                                            <td style="border:1px solid grey;padding:5px;">₹200</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border:1px solid grey;padding:5px;">8-14 Days</td>
+                                            <td style="border:1px solid grey;padding:5px;">₹400</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border:1px solid grey;padding:5px;">15-21 Days</td>
+                                            <td style="border:1px solid grey;padding:5px;">₹600</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border:1px solid grey;padding:5px;">22-28 Days</td>
+                                            <td style="border:1px solid grey;padding:5px;">₹800</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border:1px solid grey;padding:5px;">More Than 28 Days</td>
+                                            <td style="border:1px solid grey;padding:5px;">₹1000</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                                 <p class="mb-1"><strong>Class Cycle</strong></p>
                                 <p class="text-justify">There are 4 sets of classes conducted in a month during the
                                     regular 4 weeks. In case a month has 5 weeks, there are no regular classes conducted
                                     during the 5th week</p>
-                                <p class="mb-1"><strong><a href="{{ route('missing.class') }}">Missing a
+                                <p class="mb-1"><strong><a target="_blank" href="{{ route('missing.class') }}">Missing a
                                             class</a></strong></p>
                                 <p class="mb-1"><strong>Class Recordings</strong></p>
                                 <p class="text-justify">Riyaaz Online aims at preserving the tradition of learning with
@@ -196,23 +246,47 @@
                 var paymentType = parseInt($(this).val());
                 var amount = parseFloat("{{ $subTotal }}");
                 var convFee = parseFloat("{{ $convfee }}");
+                var penConvFee = parseFloat("{{ $penalConv }}");
+                var penalty = parseFloat("{{ $penalty }}");
                 sub_tot = amount * paymentType;
-                tot_conv = convFee * paymentType;
-                var total = sub_tot + tot_conv;
+                tot_conv = (convFee * paymentType) + penConvFee;
+                var total = sub_tot + penalty + tot_conv;
                 $('.amount').text(sub_tot);
                 $('.conv_fee').text(tot_conv);
+                $('.penalty').text(penalty);
                 $('.all_total').text(total);
                 $('.for_month').text(paymentType + ' Month' + (paymentType > 1 ? 's' : ''));
                 $('#amount').val(sub_tot);
                 $('#conv').val(tot_conv);
                 $('#total').val(total);
             });
+            // $('#payment_type').on('change', function() {
+            //     var paymentType = parseInt($(this).val());
+            //     var amount = parseFloat("{{ $subTotal }}");
+            //     var convFee = parseFloat("{{ $convfee }}");
+            //     sub_tot = amount * paymentType;
+            //     tot_conv = convFee * paymentType;
+            //     var total = sub_tot + tot_conv;
+            //     $('.amount').text(sub_tot);
+            //     $('.conv_fee').text(tot_conv);
+            //     $('.all_total').text(total);
+            //     $('.for_month').text(paymentType + ' Month' + (paymentType > 1 ? 's' : ''));
+            //     $('#amount').val(sub_tot);
+            //     $('#conv').val(tot_conv);
+            //     $('#total').val(total);
+            // });
+            function validateCheckbox() {
+                const checkbox = document.getElementById('terms');
+                if (!checkbox.checked) {
+                    checkbox.reportValidity(); // shows the custom oninvalid message
+                }
+            }
         </script>
     @endpush
     <style>
         .check-layer {
             position: relative;
-            padding: 0 2px 0 2px;
+            padding:0 2px 0 2px;
         }
 
         .check-layer:before {

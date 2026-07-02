@@ -28,7 +28,7 @@ class RenewMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Payment Confirmation | Riyaz Online',
+            subject: 'Payment Confirmation | Riyaaz Online',
         );
     }
 

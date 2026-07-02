@@ -10,7 +10,7 @@
 @if ($attributes->get('editor'))
 {!! $attributes->get('value') !!}
 @else
-{{ $attributes->get('value') }}
+{!! $attributes->get('value') !!}
 @endif
 </textarea>
     @error($attributes->get('name'))

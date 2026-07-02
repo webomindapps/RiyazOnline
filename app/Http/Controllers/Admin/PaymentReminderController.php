@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\EmailTemplate;
 use App\Models\StudentCourseDetail;
 use App\Models\StudentDetail;
 use Illuminate\Http\Request;
@@ -158,8 +159,8 @@ class PaymentReminderController extends Controller
             });
         }
 
-        if (!is_null($request->pick_date) && !is_null($request->to_date)) {
-            $startDate = date("Y-m-d", strtotime($request->pick_date));
+        if (!is_null($request->from_date) && !is_null($request->to_date)) {
+            $startDate = date("Y-m-d", strtotime($request->from_date));
             $endDate = date("Y-m-d", strtotime($request->to_date));
             $query->whereBetween('paid_date', [$startDate, $endDate]);
         }
@@ -168,7 +169,7 @@ class PaymentReminderController extends Controller
             $firstDay = date("Y-m-01", strtotime($month));
             $lastDay = date("Y-m-t", strtotime($month));
             $query->whereBetween('paid_date', [$firstDay, $lastDay]);
-        } else {
+        } elseif(is_null($request->from_date) && is_null($request->to_date)) {
             $query->whereMonth('paid_date', date('m'))->whereYear('paid_date', date('Y'));
         }
 
@@ -194,7 +195,8 @@ class PaymentReminderController extends Controller
 
         // sorting
         ($order == '') ? $query->orderByDesc('id') : $query->orderBy($order, $orderBy);
-        $students = $paginate ? $query->paginate($paginate)->appends(request()->query()) : $query->paginate(10)->appends(request()->query());
-        return view('admin.students.payments.penalty-payment', compact('students'));
+        $students = $paginate ? $query->paginate($paginate)->appends(request()->query()) : $query->paginate(30)->appends(request()->query());
+        $emailtemplates = EmailTemplate::orderBy('priority', 'asc')->get();
+        return view('admin.students.payments.penalty-payment', compact('students', 'emailtemplates'));
     }
 }

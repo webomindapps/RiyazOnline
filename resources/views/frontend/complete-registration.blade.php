@@ -74,7 +74,7 @@
 
                                     </div>
 
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
 
                                         <label>Email<span style="color:red">*</span></label>
 
@@ -89,7 +89,7 @@
 
                                     </div>
 
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
 
                                         <label>Phone<span style="color:red">*</span></label>
 
@@ -106,10 +106,11 @@
 
                                     </div>
 
-                                    <div class="col-md-6" style="display:none">
+                                    <div class="col-md-4">
 
+                                        <label>Alternate Phone<span style="color:red">*</span></label>
                                         <input class="form-control" type="text" name="phone_2" id="phone_2"
-                                            value="{{ $student->phone_2 }}" placeholder="Contact No 2" maxlength="10"
+                                            value="{{ $student->phone_2 }}" placeholder="Alternate Phone" maxlength="10"
                                             onkeypress="return isNumber(event)">
 
                                     </div>
@@ -123,7 +124,7 @@
                                             <i class="fas fa-phone input-icon"></i>
 
                                             <input class="form-control" type="text" name="whatsapp_no"
-                                                id="whatsapp_no" maxlength="10" onkeypress="return isNumber(event)"
+                                                id="whatsapp_no" maxlength="15" onkeypress="return isNumber(event)"
                                                 required value="{{$student->student_whatsapp_no	}}">
 
                                         </div>
@@ -419,7 +420,7 @@
                                             <i class="fas fa-phone input-icon"></i>
 
                                             <input class="form-control" type="text" name="emg_contact_no"
-                                                id="emg_phone" maxlength="10" onkeypress="return isNumber(event)"
+                                                id="emg_phone" maxlength="15" onkeypress="return isNumber(event)"
                                                 onchange="check_emg_contact_no();" required>
 
                                         </div>

@@ -1,6 +1,6 @@
 :root {
-    --primary: #c0392b; /* Deep red */
-    --secondary: #f1c40f; /* Rich gold */
+    --primary: #e72427; /* Deep red */
+    --secondary: #f35b5d; /* Rich gold */
     --dark: #2c3e50;
     --light: #fdfcfb;
 }
@@ -93,7 +93,6 @@ body {
     padding: 100px 0;
     position: relative;
     overflow: hidden;
-    height: 60vh;
 }
 
 .hero-content {

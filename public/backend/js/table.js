@@ -87,8 +87,8 @@ var getCheckedValues = [];
 masterCheck.on("click", function () {
     var isMasterChecked = $(this).is(":checked");
     listCheckItems.prop("checked", isMasterChecked);
-    $('#bulk-options').show();
-    $('.sorting').hide()
+    // $('#bulk-options').show();
+    // $('.sorting').hide()
     getSelectedItems();
 });
 

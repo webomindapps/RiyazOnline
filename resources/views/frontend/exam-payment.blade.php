@@ -102,11 +102,11 @@
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
         var options = {
-            "key": "",
+            "key": "rzp_live_75gaxvhMqxSPEG",
             "amount": "{{ $total }}",
             "currency": "INR",
             "name": "Riyaaz Online",
-            "description": "Riyaaz Online Exam Fee",
+            "description": "Riyaaz Online Exam Fees",
             "image": "{{ asset('frontend/ifo.png') }}",
             "order_id": "{{ $order->id }}",
             "callback_url": "{{ $callback }}",

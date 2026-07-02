@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -37,5 +38,19 @@ Route::middleware('auth')->group(function () {
 Route::get('/sendSMS', [HomeController::class, 'sendSMS'])->name('send.sms');
 Route::get('/get-states/{id}', [HomeController::class, 'getStates'])->name('get.states');
 Route::get('/get-cities/{id}', [HomeController::class, 'getCities'])->name('get.cities');
+
+Route::get('/send-test-mail', function () {
+    $details = [
+        'title' => 'Test Mail from Laravel',
+        'body' => 'This is a test email to verify mail configuration.'
+    ];
+
+    Mail::raw($details['body'], function ($message) use ($details) {
+        $message->to('dhruba@webomindapps.com')
+                ->subject($details['title']);
+    });
+
+    return "Test mail sent successfully!";
+});
 
 require __DIR__ . '/auth.php';

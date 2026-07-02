@@ -46,9 +46,9 @@
 
                 <p><b>Gender :</b> <span>{{ $student->gender == 0 ? 'Male' : 'Female' }}</span></p>
 
-                <p><b>Country :</b> <span>{{ $student->country?->name }}</span></p>
+                {{-- <p><b>Country :</b> <span>{{ $student->country?->name }}</span></p>
                 <p><b>State :</b> <span>{{ $student->state?->name }}</span></p>
-                <p><b>City :</b> <span>{{ $student->city }}</span></p>
+                <p><b>City :</b> <span>{{ $student->city }}</span></p> --}}
 
             </div>
 
@@ -82,7 +82,9 @@
                 @if($student->age != 'Adult')
                     <p><b>Father Name :</b> <span>{{ $student->father_name }}</span></p>
                 @endif
-
+                <p><b>Current Country :</b> <span>{{ $student->country?->name }}</span></p>
+                <p><b>Current State :</b> <span>{{ $student->state?->name }}</span></p>
+                <p><b>Current City :</b> <span>{{ $student->city }}</span></p>
                 <p><b>Current Address :</b> <span>{{ $student->current_address }}</span></p>
 
             </div>
@@ -92,9 +94,10 @@
                 @if($student->age != 'Adult')
                     <p><b>Mother Name :</b> <span>{{ $student->mother_name }}</span></p>
                 @endif
-
+                <p><b>Permanent Country :</b> <span>{{ $student->pcountry?->name }}</span></p>
+                <p><b>Permanent State :</b> <span>{{ $student->pstate?->name }}</span></p>
+                <p><b>Permanent City :</b> <span>{{ $student->p_city }}</span></p>
                 <p><b>Permanent Address :</b> <span>{{ $student->permanent_address }}</span></p>
-
             </div>
 
             <div class="col-md-4 col-sm-6">
